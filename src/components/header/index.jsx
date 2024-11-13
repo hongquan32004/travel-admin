@@ -4,12 +4,27 @@ import DropDown from '../../assets/svgs/drop-down.svg'
 import DropUp from '../../assets/svgs/drop-up.svg'
 import Exit from '../../assets/svgs/exit.svg'
 import './style.scss'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { logout } from '../../api/auth'
 import { useNavigate } from 'react-router-dom'
+import { get } from '../../utils/axios-http/axios-http'
 const Header = () => {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const [user, setUser] = useState(null);
     const navigate = useNavigate();
+    // useEffect(() => {
+    //     const fetchUserData = async () => {
+    //         try {
+    //             const respone = await get('account/get-all-account')
+    //             setUser(respone)
+    //             console.log(respone)
+    //         } catch (error) {
+    //             console.log(error)
+    //         }
+    //     }
+    //     fetchUserData();
+    // }, [])
+
     const handlelogout = async () => {
         try {
             await logout();
@@ -58,7 +73,7 @@ const Header = () => {
                     >
                         <Button className='header__btn' type='text'>
                             <div className='header__btn--infor'>
-                                <p className='header__username'>DHPhuong</p>
+                                <p className='header__username'>Hong Quan</p>
                                 <p className='header__role'>Admin</p>
                             </div>
                             <div className='header__icon'>{isDropdownOpen ? (<img src={DropUp} alt='' />) : (<img src={DropDown} alt="" />)}</div>

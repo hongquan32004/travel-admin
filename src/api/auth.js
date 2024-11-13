@@ -10,10 +10,10 @@ export const login = async (data) => {
         } = data;
 
 
-        axios.post(`${baseUrl}/api/admin/auth/login`, {
-                email: email,
-                password: password
-            })
+        axios.post(`${baseUrl}/auth/login`, {
+            email: email,
+            password: password
+        })
             .then(function (response) {
                 const token = response.data.token;
                 localStorage.setItem("token", token);
@@ -30,10 +30,7 @@ export const login = async (data) => {
 };
 export const logout = async () => {
     try {
-        const respone = await request(publicInstance, {
-            method: "get",
-            url: "/api/admin/auth/logout"
-        })
+        axios.get(`${baseUrl}/auth/logout`);
     }
     catch (error) {
         console.log(error)

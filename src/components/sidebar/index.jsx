@@ -25,7 +25,7 @@ function Sidebar() {
             id: 2,
             label: "Tours",
             icon: <img src={Tour} alt="" className="icon" />,
-            to: "/tours",
+            to: "/tour",
         },
         {
             id: 3,
