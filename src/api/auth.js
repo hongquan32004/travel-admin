@@ -1,7 +1,7 @@
-import {
-    publicInstance,
-    request
-} from "../utils/axios-http/axios-http";
+import axios from "axios";
+const baseUrl =
+    import.meta.env.VITE_APP_URL_BE
+
 export const login = async (data) => {
     try {
         const {
@@ -9,19 +9,19 @@ export const login = async (data) => {
             password
         } = data;
 
-        const response = await request(publicInstance, {
-            data: {
+
+        axios.post(`${baseUrl}/api/admin/auth/login`, {
                 email: email,
-                password,
-            },
-            method: "post",
-            url: "/api/admin/auth/login"
-        });
+                password: password
+            })
+            .then(function (response) {
+                const token = response.data.token;
+                localStorage.setItem("token", token);
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
 
-
-
-        const token = response.data.token;
-        localStorage.setItem("accessToken", token);
 
     } catch (error) {
         console.log(error);
