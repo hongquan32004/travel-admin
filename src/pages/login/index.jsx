@@ -8,8 +8,7 @@ function Login() {
     const navigate = useNavigate();
     const onFinish = async (values) => {
         try {
-            const respone = await login(values);
-            console.log(respone)
+            await login(values);
             message.success('Đăng nhập thành công!');
             navigate('/dashboard')
 

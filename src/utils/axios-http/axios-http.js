@@ -2,18 +2,11 @@
 
 import axios from 'axios';
 
-// Lấy token từ localStorage
-const token = localStorage.getItem("token");
-
-if (!token) {
-  // Nếu không có token, có thể chuyển hướng về trang login hoặc làm gì đó
-  console.log("Token không tồn tại. Vui lòng đăng nhập.");
-  // window.location.href = "/login"; // Ví dụ chuyển hướng
-}
-
 
 
 const createAxiosInstance = (baseURL) => {
+
+  const token = localStorage.getItem("token");
   return axios.create({
     baseURL,
     headers: {
@@ -22,6 +15,7 @@ const createAxiosInstance = (baseURL) => {
       'Content-Type': 'application/json'
     }
   });
+
 };
 
 
@@ -38,18 +32,7 @@ const get = (path) => {
       return response.data;
     })
     .catch(error => {
-      if (error.response) {
-        // Lỗi từ server trả về
-        console.error('Server Error:', error.response.data);
-        console.error('Status:', error.response.status);
-        console.error('Headers:', error.response.headers);
-      } else if (error.request) {
-        // Lỗi không nhận được phản hồi từ server
-        console.error('Request Error:', error.request);
-      } else {
-        // Lỗi cấu hình
-        console.error('Error:', error.message);
-      }
+      console.error('Error:', error);
     });
 };
 
