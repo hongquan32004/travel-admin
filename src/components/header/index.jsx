@@ -1,18 +1,33 @@
 import profile from '../../assets/images/profilePicture.png'
-import { Dropdown, Button } from 'antd'
+import { Dropdown, Button, message } from 'antd'
 import DropDown from '../../assets/svgs/drop-down.svg'
 import DropUp from '../../assets/svgs/drop-up.svg'
 import Exit from '../../assets/svgs/exit.svg'
 import './style.scss'
 import { useState } from 'react'
+import { logout } from '../../api/auth'
+import { useNavigate } from 'react-router-dom'
 const Header = () => {
-    const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const navigate = useNavigate();
+    const handlelogout = async () => {
+        try {
+            await logout();
+            message.success('Đã đăng xuất');
+            navigate('/login');
+        }
+        catch (error) {
+            console.log(error);
+            message.error('Đăng xuất thất bại')
+        }
+    }
 
     const menuItems = [
         {
             key: '1',
             label: 'Đăng xuất',
             icon: <img src={Exit} alt="" />,
+            onClick: handlelogout
         },
     ]
 
@@ -39,7 +54,8 @@ const Header = () => {
                         trigger={['click']}
                         placement='bottomRight'
                         open={isDropdownOpen}
-                        onOpenChange={(e) => setIsDropdownOpen(e)}>
+                        onOpenChange={(e) => setIsDropdownOpen(e)}
+                    >
                         <Button className='header__btn' type='text'>
                             <div className='header__btn--infor'>
                                 <p className='header__username'>DHPhuong</p>
