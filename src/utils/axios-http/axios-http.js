@@ -16,7 +16,6 @@ if (!token) {
 const createAxiosInstance = (baseURL) => {
   return axios.create({
     baseURL,
-    timeout: 1000,
     headers: {
       'Authorization': `Bearer ${token}`,
       'Accept': 'application/json',
@@ -30,6 +29,8 @@ const createAxiosInstance = (baseURL) => {
 const axiosInstance = createAxiosInstance(
   import.meta.env.VITE_APP_URL_BE);
 
+
+
 // Phương thức GET
 const get = (path) => {
   return axiosInstance.get(`/${path}`)
@@ -37,7 +38,18 @@ const get = (path) => {
       return response.data;
     })
     .catch(error => {
-      console.error('Error:', error);
+      if (error.response) {
+        // Lỗi từ server trả về
+        console.error('Server Error:', error.response.data);
+        console.error('Status:', error.response.status);
+        console.error('Headers:', error.response.headers);
+      } else if (error.request) {
+        // Lỗi không nhận được phản hồi từ server
+        console.error('Request Error:', error.request);
+      } else {
+        // Lỗi cấu hình
+        console.error('Error:', error.message);
+      }
     });
 };
 

@@ -10,7 +10,7 @@ export const login = async (data) => {
         } = data;
 
 
-        axios.post(`${baseUrl}/api/admin/auth/login`, {
+        axios.post(`${baseUrl}/auth/login`, {
                 email: email,
                 password: password
             })
