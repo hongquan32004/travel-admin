@@ -22,8 +22,21 @@ export const login = async (data) => {
                 console.log(error);
             });
 
+
     } catch (error) {
         console.log(error);
         throw error;
     }
 };
+export const logout = async () => {
+    try {
+        const respone = await request(publicInstance, {
+            method: "get",
+            url: "/api/admin/auth/logout"
+        })
+    }
+    catch (error) {
+        console.log(error)
+        throw error;
+    }
+}
