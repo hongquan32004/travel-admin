@@ -11,9 +11,9 @@ export const login = async (data) => {
 
 
         axios.post(`${baseUrl}/auth/login`, {
-            email: email,
-            password: password
-        })
+                email: email,
+                password: password
+            })
             .then(function (response) {
                 const token = response.data.token;
                 localStorage.setItem("token", token);
@@ -31,8 +31,7 @@ export const login = async (data) => {
 export const logout = async () => {
     try {
         axios.get(`${baseUrl}/auth/logout`);
-    }
-    catch (error) {
+    } catch (error) {
         console.log(error)
         throw error;
     }
