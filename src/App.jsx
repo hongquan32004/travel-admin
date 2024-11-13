@@ -1,37 +1,37 @@
-import { useState } from 'react'
-import { useRoutes } from 'react-router-dom';
-import './App.css'
-import Login from './pages/login';
-import MainLayout from './layouts/main-layout';
-import Dashboard from './pages/dashboard';
-import Tour from './pages/tour';
+import { useState } from "react";
+import { useRoutes } from "react-router-dom";
+import "./App.css";
+import Login from "./pages/login";
+import MainLayout from "./layouts/main-layout";
+import Dashboard from "./pages/dashboard";
+import Tour from "./pages/tour";
+import Role from "./pages/roles";
 
 function App() {
-
   const routes = useRoutes([
     {
-      path: 'login',
-      element: <Login />
+      path: "login",
+      element: <Login />,
     },
     {
       element: <MainLayout />,
       children: [
         {
-          path: '/dashboard',
-          element: <Dashboard />
+          path: "/dashboard",
+          element: <Dashboard />,
         },
         {
-          path: '/tour',
-          element: <Tour />
-        }
-      ]
-    }
-  ])
-  return (
-    <>
-      {routes}
-    </>
-  )
+          path: "/tour",
+          element: <Tour />,
+        },
+        {
+          path: "/roles",
+          element: <Role />,
+        },
+      ],
+    },
+  ]);
+  return <>{routes}</>;
 }
 
-export default App
+export default App;
