@@ -1,0 +1,39 @@
+.creatnew-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .creatnew-form {
+        margin-top: 20px;
+        width: 95%;
+
+        .form-information,
+        .form-schedult,
+        .form-tourDetail {
+            margin: auto;
+            width: 40%;
+            border: 1px solid black;
+            border-radius: 7px;
+            padding: 20px 0px 20px 50px;
+
+            .if-input,
+            .sh-input,
+            .td-input {
+                display: flex;
+                align-items: center;
+                margin: auto;
+
+                p {
+                    margin-right: 7px;
+                }
+
+                .input {
+                    width: 65%;
+                    height: 30px;
+                }
+            }
+        }
+    }
+
+}

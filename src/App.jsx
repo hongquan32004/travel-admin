@@ -6,6 +6,8 @@ import MainLayout from "./layouts/main-layout";
 import Dashboard from "./pages/dashboard";
 import Tour from "./pages/tour";
 import Role from "./pages/roles";
+import TourDetail from "./pages/tourDetail";
+import CreateNew from "./pages/createNew";
 
 function App() {
   const routes = useRoutes([
@@ -25,9 +27,17 @@ function App() {
           element: <Tour />,
         },
         {
+          path: "/tour-detail/:tourID",
+          element: <TourDetail />,
+        },
+        {
           path: "/roles",
           element: <Role />,
         },
+        {
+          path: '/create-new',
+          element: <CreateNew />
+        }
       ],
     },
   ]);

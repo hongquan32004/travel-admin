@@ -1,9 +1,14 @@
 import React, { useEffect, useState } from 'react'
-import { message, Space, Table, Tag } from 'antd';
+import { message, Space, Table, Tag, Button } from 'antd';
 import { get, patch } from '../../utils/axios-http/axios-http';
+import { Navigate, useNavigate } from 'react-router-dom';
 
 function Tour() {
-    const [tour, setTour] = useState([])
+    const [tour, setTour] = useState([]);
+    const navigate = useNavigate();
+    const viewDetails = (tourID) => {
+        navigate(`/tour-detail/${tourID}`);
+    };
     useEffect(() => {
         const fetchDataTour = async () => {
             const respone = await get('tours/get-all-tour')
@@ -25,7 +30,7 @@ function Tour() {
         {
             title: 'STT',
             key: 'index',
-            render: (text, record, index) => <a>{index + 1}</a>, // Hiển thị số thứ tự
+            render: (text, record, index) => <a>{index + 1}</a>,
         },
         {
             title: 'Tên tour',
@@ -108,7 +113,7 @@ function Tour() {
             key: 'action',
             render: (_, record) => (
                 <Space size="middle">
-                    <a>Thêm</a>
+                    <a onClick={() => viewDetails(record.id)}>Xem chi tiết</a>
                     <a>Sửa</a>
                     <a onClick={() => removeTour(record.id)}>Xóa</a>
                 </Space>
@@ -118,6 +123,7 @@ function Tour() {
     // const data = tour;
     return (
         <div className="tour-container">
+            <Button onClick={() => navigate('/create-new')} style={{ background: 'blue', color: 'white' }}>Tạo mới</Button >
             <Table columns={columns} dataSource={tour} />
         </div>
     )
