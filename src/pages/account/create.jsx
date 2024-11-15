@@ -32,6 +32,8 @@ const ModalCreateAccount = ({ onClose, fetchAccounts, open, roles }) => {
     formData.append("password", password);
     formData.append("email", email);
     formData.append("roleId", role);
+    console.log(newAvatar);
+
     if (newAvatar) {
       formData.append("avatar", newAvatar);
     }

@@ -15,8 +15,8 @@ import Transportation from "./pages/transportation";
 import Permissions from "./pages/permissions";
 import Account from "./pages/account";
 import PrivateRoute from "./components/privateRoute";
+import EditTour from "./pages/editTour/";
 import { useSelector } from "react-redux";
-
 
 function App() {
   const permissions = useSelector((state) => state.permissions.list);
@@ -89,13 +89,17 @@ function App() {
               element: isViewAccount ? <Account /> : <Dashboard />,
             },
             {
-              path: '/tour-detail/:tourID',
-              element: <TourDetail />
+              path: "/tour-detail/:tourID",
+              element: <TourDetail />,
             },
             {
-              path: '/create-new',
-              element: <CreateNew />
-            }
+              path: "/create-new",
+              element: <CreateNew />,
+            },
+            {
+              path: "/edit-tour/:tourId",
+              element: <EditTour />,
+            },
           ],
         },
       ],
