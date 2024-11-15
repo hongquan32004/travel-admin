@@ -1,80 +1,107 @@
 /* eslint-disable */
-
 import axios from 'axios';
 
+const baseURL =
+    import.meta.env.VITE_APP_URL_BE;
 
 
-const createAxiosInstance = (baseURL) => {
-
+const createAxiosInstance = (baseURL, headers = {}) => {
     const token = localStorage.getItem("token");
     return axios.create({
         baseURL,
         headers: {
-            'Authorization': `Bearer ${token}`,
+            'Authorization': token ? `Bearer ${token}` : '',
             'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        }
+            ...headers,
+        },
     });
 
 };
 
+// Instance dùng cho JSON
+const axiosInstance = createAxiosInstance(baseURL, {
+    'Content-Type': 'application/json'
+});
 
-// Tạo instance dùng cho các request công khai
-const axiosInstance = createAxiosInstance(
-    import.meta.env.VITE_APP_URL_BE);
+
+// Instance dùng cho form data
+const axiosInstanceForm = createAxiosInstance(baseURL);
 
 
+// Hàm xử lý lỗi chung
+const handleError = (error) => {
+    console.error('Error:', error.response || error.message);
+    throw error; // Ném lỗi để xử lý ở mức cao hơn nếu cần
+};
 
 // Phương thức GET
-const get = (path) => {
-    return axiosInstance.get(`/${path}`)
-        .then(response => {
-            return response.data;
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
+
+const get = async (path) => {
+    try {
+        const response = await axiosInstance.get(`/${path}`);
+        return response.data;
+    } catch (error) {
+        handleError(error);
+    }
 };
 
 // Phương thức POST
-const post = (path, data) => {
-    return axiosInstance.post(`/${path}`, data)
-        .then(response => {
-            console.log('Response:', response.data);
-            return response.data;
-        })
-        .catch(error => {
-            console.error('Error:', error); // Xử lý lỗi
-        });
+const post = async (path, data) => {
+    try {
+        const response = await axiosInstance.post(`/${path}`, data);
+        return response.data;
+    } catch (error) {
+        handleError(error);
+    }
+};
+// Phương thức POST
+const postForm = async (path, data) => {
+    try {
+        const response = await axiosInstanceForm.post(`/${path}`, data);
+        return response.data;
+    } catch (error) {
+        handleError(error);
+    }
 };
 
 // Phương thức PATCH
-const patch = (path, data) => {
-    return axiosInstance.patch(`/${path}`, data)
-        .then(response => {
-            console.log('Response:', response.data);
-            return response.data;
-        })
-        .catch(error => {
-            console.error('Error:', error); // Xử lý lỗi
-        });
+const patch = async (path, data) => {
+    try {
+        const response = await axiosInstance.patch(`/${path}`, data);
+        return response.data;
+    } catch (error) {
+        handleError(error);
+    }
 };
 
-const deleteMethod = (path) => {
-    return axiosInstance.delete(`/${path}`)
-        .then(response => {
-            console.log('Response:', response.data);
-            return response.data;
-        })
-        .catch(error => {
-            console.error('Error:', error); // Xử lý lỗi
-        });
-}
+// Phương thức PATCH với form data
+const patchForm = async (path, data) => {
+    try {
+        const response = await axiosInstanceForm.patch(`/${path}`, data);
+        return response.data;
+    } catch (error) {
+        handleError(error);
+    }
+};
 
-// Xuất các phương thức và instance để sử dụng ở nơi khác
+// Phương thức DELETE
+const deleteMethod = async (path, data) => {
+    try {
+        const response = await axiosInstance.delete(`/${path}`, {
+            data
+        });
+        return response.data;
+    } catch (error) {
+        handleError(error);
+    }
+};
+
+// Xuất các phương thức để sử dụng ở nơi khác
 export {
     get,
     post,
+    postForm,
     patch,
+    patchForm,
     deleteMethod
 };
