@@ -1,12 +1,16 @@
 import axios from "axios";
-const baseUrl = import.meta.env.VITE_APP_URL_BE;
+const baseUrl =
+    import.meta.env.VITE_APP_URL_BE;
 
 export const login = async (data) => {
     try {
-        const { email, password } = data;
+        const {
+            email,
+            password
+        } = data;
 
         // Gọi API với axios và đợi phản hồi
-        const response = await axios.post(`${baseUrl}/auth/login`, {
+        const response = await axios.post(`http://localhost:5000/api/admin/auth/login`, {
             email,
             password,
         });
@@ -18,7 +22,7 @@ export const login = async (data) => {
             localStorage.setItem("token", token);
         }
 
-        return response.data; // Trả về dữ liệu nhận được từ API (thường có message và token)
+        return response.data;
     } catch (error) {
         console.error(error);
         throw new Error('Đã có lỗi khi đăng nhập. Vui lòng thử lại!');
@@ -27,7 +31,7 @@ export const login = async (data) => {
 export const logout = async () => {
     try {
         await axios.get(`${baseUrl}/auth/logout`);
-        localStorage.removeItem("token");  // Xóa token khỏi localStorage
+        localStorage.removeItem("token"); // Xóa token khỏi localStorage
         console.log('Đăng xuất thành công');
     } catch (error) {
         console.error('Lỗi khi đăng xuất:', error);

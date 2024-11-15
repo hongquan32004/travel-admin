@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate, Outlet, useNavigate } from "react-router-dom";
 import { get, post } from "../../utils/axios-http/axios-http";
 import { Spin, message } from "antd";
 import { useDispatch, useSelector } from "react-redux";
@@ -7,9 +7,9 @@ import { setPermissions } from "../../slice/permissionSlice";
 
 const PrivateRoute = () => {
   const [isLoading, setIsLoading] = useState(true);
-  const [role, setRole] = useState(null);
   const [isAuthorized, setIsAuthorized] = useState(false);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const verifyToken = async () => {
@@ -19,7 +19,6 @@ const PrivateRoute = () => {
         const adminId = verifyResponse;
 
         const roleResponse = await get(`roles/detail/${adminId}`);
-        setRole(roleResponse);
 
         const permissionsResponse = await get(
           `roles/${roleResponse.id}/permissions`
@@ -39,6 +38,7 @@ const PrivateRoute = () => {
         console.log("Lỗi khi xác thực token hoặc lấy quyền:", error);
         setIsAuthorized(false);
         message.error("Lỗi khi xác thực token!");
+        navigate("/login");
       } finally {
         setIsLoading(false);
       }
