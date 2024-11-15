@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import './style.scss'
 import { Table, Button, message, Spin } from "antd";
 import { deleteMethod, get, post } from "../../utils/axios-http/axios-http";
 
@@ -193,10 +194,13 @@ function Permissions() {
   return (
     <>
       <Spin spinning={loading}>
-        <Button type="primary" onClick={handleClick}>
-          Cập nhật phân quyền
-        </Button>
-        <Table columns={columns} dataSource={data} pagination={false} />
+        <div className="permissions-container">
+          <Button type="primary" onClick={handleClick}>
+            Cập nhật phân quyền
+          </Button>
+          <Table className="dashboard-table" columns={columns} dataSource={data} pagination={false} />
+        </div>
+
       </Spin>
     </>
   );

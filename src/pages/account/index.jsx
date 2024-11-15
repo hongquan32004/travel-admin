@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import './style.scss'
 import { Table, Space, Switch, message, Button } from "antd";
 import { deleteMethod, get, patch } from "../../utils/axios-http/axios-http";
 import EditAccount from "./edit";
@@ -135,15 +136,18 @@ function Account() {
 
   return (
     <>
-      <Button type="primary" onClick={handleCreate}>
-        Thêm mới
-      </Button>
-      <Table
-        columns={columns}
-        dataSource={accounts}
-        loading={loading}
-        rowKey="id"
-      />
+      <div className="account-container">
+        <Button type="primary" onClick={handleCreate}>
+          Thêm mới
+        </Button>
+        <Table
+          columns={columns}
+          dataSource={accounts}
+          loading={loading}
+          rowKey="id"
+          className="dashboard-table"
+        />
+      </div>
 
       {isModalOpen && (
         <EditAccount

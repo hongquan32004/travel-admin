@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import './edit.scss'
 import { Modal, message } from "antd";
 import { patchForm } from "../../utils/axios-http/axios-http";
 
@@ -56,42 +57,45 @@ function EditAccount({ open, onClose, account, roles, roleId, fetchAccounts }) {
     >
       <form className="formUpdateAccount">
         <div className="item">
-          <label>Ảnh đại diện</label>
+          <label>Ảnh đại diện: </label>
           {avatar && (
             <img
               src={avatar}
               alt="Avatar Preview"
-              style={{ width: 100, marginBottom: 10 }}
+              style={{ width: 100, marginBottom: 10, marginLeft: '29px' }}
             />
           )}
-          <input type="file" accept="image/*" onChange={handleAvatarChange} />
+          <input style={{ marginLeft: '33px' }} type="file" accept="image/*" onChange={handleAvatarChange} />
         </div>
         <div className="item">
-          <label>Tên</label>
+          <label>Tên: </label>
           <input
             value={name}
             type="text"
             onChange={(e) => setName(e.target.value)}
+            style={{ marginLeft: '60px' }}
           />
         </div>
         <div className="item">
-          <label>Mật khẩu</label>
+          <label>Mật khẩu: </label>
           <input
             value={password}
             type="text"
             onChange={(e) => setPassword(e.target.value)}
+            style={{ marginLeft: '23px' }}
           />
         </div>
         <div className="item">
-          <label>Email</label>
+          <label>Email: </label>
           <input
             value={email}
             type="email"
             onChange={(e) => setEmail(e.target.value)}
+            style={{ marginLeft: '48px' }}
           />
         </div>
         <div className="item">
-          <label>Quyền</label>
+          <label>Quyền: </label>
           <select value={roleId} onChange={(e) => setRole(e.target.value)}>
             {roles.map((role) => (
               <option key={role.id} value={role.id}>

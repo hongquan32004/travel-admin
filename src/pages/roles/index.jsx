@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import './style.scss'
 import { Space, Table, Modal, message, Button } from "antd";
 import { get } from "../../utils/axios-http/axios-http";
 import { patch } from "../../utils/axios-http/axios-http";
@@ -132,68 +133,73 @@ function Role() {
 
   return (
     <>
-      <Button type="primary" onClick={handleClick}>
-        {" "}
-        Thêm mới{" "}
-      </Button>
-      <Table
-        columns={columns}
-        dataSource={data}
-        loading={loading}
-        rowKey="id"
-      />
-      <Modal
-        title="Cập nhật thông tin"
-        open={isModalOpen}
-        onOk={handleOk}
-        onCancel={handleCancel}
-        loading={loading}
-      >
-        <form className="formUpdateRole">
-          <div className="role-item">
-            <span>Tên</span>
-            <input
-              value={name}
-              type="name"
-              onChange={(e) => setName(e.target.value)}
-            />
-          </div>
-          <div className="role-item">
-            <span>Mô tả</span>
-            <input
-              value={description}
-              type="description"
-              onChange={(e) => setDescription(e.target.value)}
-            />
-          </div>
-        </form>
-      </Modal>
-      <Modal
-        title="Thêm mới quyền"
-        open={isModalOpen}
-        onOk={handleSubmit}
-        onCancel={handleCancel}
-        loading={loading}
-      >
-        <form className="formUpdateRole">
-          <div className="role-item">
-            <span>Tên</span>
-            <input
-              value={name}
-              type="name"
-              onChange={(e) => setName(e.target.value)}
-            />
-          </div>
-          <div className="role-item">
-            <span>Mô tả</span>
-            <input
-              value={description}
-              type="description"
-              onChange={(e) => setDescription(e.target.value)}
-            />
-          </div>
-        </form>
-      </Modal>
+      <div className="roles-container">
+        <Button type="primary" onClick={handleClick}>
+          {" "}
+          Thêm mới{" "}
+        </Button>
+        <Table
+          columns={columns}
+          dataSource={data}
+          loading={loading}
+          rowKey="id"
+          className="dashboard-table"
+        />
+        <Modal
+          title="Cập nhật thông tin"
+          open={isModalOpen}
+          onOk={handleOk}
+          onCancel={handleCancel}
+          loading={loading}
+        >
+          <form className="formUpdateRole">
+            <div className="role-item">
+              <span>Tên</span>
+              <input
+                value={name}
+                type="name"
+                onChange={(e) => setName(e.target.value)}
+              />
+            </div>
+            <div className="role-item">
+              <span>Mô tả</span>
+              <input
+                value={description}
+                type="description"
+                onChange={(e) => setDescription(e.target.value)}
+              />
+            </div>
+          </form>
+        </Modal>
+        <Modal
+          title="Thêm mới quyền"
+          open={isModalOpen}
+          onOk={handleSubmit}
+          onCancel={handleCancel}
+          loading={loading}
+        >
+          <form className="formUpdateRole">
+            <div className="role-item" style={{ marginBottom: '20px' }}>
+              <span>Tên: </span>
+              <input
+                style={{ marginLeft: '35px', width: '370px', height: '25px' }}
+                value={name}
+                type="name"
+                onChange={(e) => setName(e.target.value)}
+              />
+            </div>
+            <div className="role-item">
+              <span>Mô tả: </span>
+              <input
+                style={{ marginLeft: '20px', width: '370px', height: '25px' }}
+                value={description}
+                type="description"
+                onChange={(e) => setDescription(e.target.value)}
+              />
+            </div>
+          </form>
+        </Modal>
+      </div>
     </>
   );
 }

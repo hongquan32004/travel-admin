@@ -19,7 +19,6 @@ function Login() {
                 message.success('Đăng nhập thành công!');
                 navigate('/dashboard');
             } else {
-                // Nếu không có token, hiển thị thông báo lỗi từ response.message
                 message.error(response?.message || 'Đăng nhập thất bại!');
             }
 
@@ -39,22 +38,22 @@ function Login() {
                     onFinish={onFinish}
                 >
                     <h2>LOGIN</h2>
+                    <p>Email: </p>
                     <Form.Item
                         className='form-input'
-                        label="Email"
                         name="email"
                         rules={[{ required: true, message: 'Vui lòng nhập email của bạn!' }]}
                     >
-                        <Input />
+                        <Input className='input' placeholder='Nhập email của bạn !' />
                     </Form.Item>
 
+                    <p>Password: </p>
                     <Form.Item
                         className='form-input'
-                        label="Password"
                         name="password"
                         rules={[{ required: true, message: 'Vui lòng nhập mật khẩu của bạn!' }]}
                     >
-                        <Input.Password />
+                        <Input.Password className='input' placeholder='Nhập mật khẩu của bạn !' />
                     </Form.Item>
 
                     <Form.Item >

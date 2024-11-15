@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import './style.scss'
-import { Table } from 'antd';
+import { Table, Collapse } from 'antd';
 import { get } from '../../utils/axios-http/axios-http';
 import { useParams } from 'react-router-dom';
 import Diadiem from '../../assets/images/diadiem.png'
@@ -9,6 +9,7 @@ import Doituong from '../../assets/images/doituong.png'
 import Thoigian from '../../assets/images/thoigian.png'
 import Phuongtien from '../../assets/images/phuongtien.png'
 import Khuyenmai from '../../assets/images/khuyenmai.png'
+const { Panel } = Collapse;
 
 function TourDetail() {
     const [tourDetail, setTourDetail] = useState();
@@ -24,11 +25,6 @@ function TourDetail() {
     }, [tourID]);
 
     const columns = [
-        {
-            title: 'STT',
-            key: 'index',
-            render: (text, record, index) => index + 1, // Đánh số thứ tự
-        },
         {
             title: 'Tên tour',
             dataIndex: ['tour', 'title'],
@@ -77,6 +73,61 @@ function TourDetail() {
             key: 'createdBy',
         },
     ];
+    const tourDetailsColumns = [
+        {
+            title: 'ID',
+            dataIndex: 'id',
+            key: 'id',
+        },
+        {
+            title: 'Giá người lớn',
+            dataIndex: 'adultPrice',
+            key: 'adultPrice',
+            render: (price) => price.toLocaleString() + ' VND',
+        },
+        {
+            title: 'Giá trẻ em',
+            dataIndex: 'childrenPrice',
+            key: 'childrenPrice',
+            render: (price) => price.toLocaleString() + ' VND',
+        },
+        {
+            title: 'Giá trẻ nhỏ',
+            dataIndex: 'childPrice',
+            key: 'childPrice',
+            render: (price) => price.toLocaleString() + ' VND',
+        },
+        {
+            title: 'Giá em bé',
+            dataIndex: 'babyPrice',
+            key: 'babyPrice',
+            render: (price) => price.toLocaleString() + ' VND',
+        },
+        {
+            title: 'Phụ phí phòng đơn',
+            dataIndex: 'singleRoomSupplementPrice',
+            key: 'singleRoomSupplementPrice',
+            render: (price) => price.toLocaleString() + ' VND',
+        },
+        {
+            title: 'Số lượng chỗ',
+            dataIndex: 'stock',
+            key: 'stock',
+        },
+        {
+            title: 'Ngày khởi hành',
+            dataIndex: 'dayStart',
+            key: 'dayStart',
+            render: (date) => new Date(date).toLocaleDateString(),
+        },
+        {
+            title: 'Ngày trở về',
+            dataIndex: 'dayReturn',
+            key: 'dayReturn',
+            render: (date) => new Date(date).toLocaleDateString(),
+        },
+    ];
+
     return (
         <div className='tourdetail-container'>
             <div className="tourdetail-content">
@@ -120,6 +171,37 @@ function TourDetail() {
                             <p>{tourDetail?.information?.promotion}</p>
                         </div>
                     </div>
+                </div>
+                {/* Lịch Trình */}
+                <div className="tour-schedule">
+                    <h1>Lịch Trình</h1>
+                    <Collapse accordion>
+                        {tourDetail?.schedule?.map((item) => (
+                            <Panel header={`Ngày ${item.day}: ${item.title}`} key={item.id}>
+                                <p>{item.information}</p>
+                            </Panel>
+                        ))}
+                    </Collapse>
+                </div>
+                <div className="tour-images">
+                    <h1>Hình ảnh chuyến đi</h1>
+                    <div className="image-gallery">
+                        {tourDetail?.images?.map((image) => (
+                            <div className="image-item" key={image.id}>
+                                <img src={image.source} alt={image.name} />
+                                <p>{image.name}</p>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+                <div className="tour-details-table">
+                    <h1>Chi tiết tour</h1>
+                    <Table
+                        columns={tourDetailsColumns}
+                        dataSource={tourDetail?.tourDetails}
+                        rowKey="id"
+                        pagination={false}
+                    />
                 </div>
             </div>
         </div>

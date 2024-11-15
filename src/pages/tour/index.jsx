@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import './style.scss'
 import { message, Space, Table, Tag, Button } from 'antd';
 import { get, patch } from '../../utils/axios-http/axios-http';
 import { Navigate, useNavigate } from 'react-router-dom';
@@ -41,7 +42,7 @@ function Tour() {
             title: 'Ảnh',
             dataIndex: 'source',
             key: 'source',
-            render: (source) => <img src={source} alt="tour" style={{ width: 50, height: 50 }} />, // Hiển thị ảnh
+            render: (source) => <img src={source} alt="tour" style={{ width: 50, height: 50 }} />,
         },
         {
             title: 'Mã tour',
@@ -120,11 +121,11 @@ function Tour() {
             ),
         },
     ];
-    // const data = tour;
+
     return (
         <div className="tour-container">
-            <Button onClick={() => navigate('/create-new')} style={{ background: 'blue', color: 'white' }}>Tạo mới</Button >
-            <Table columns={columns} dataSource={tour} />
+            <Button className='button' onClick={() => navigate('/create-new')} >Tạo mới</Button >
+            <Table className='dashboard-table' columns={columns} dataSource={tour} pagination={{ pageSize: 4 }} />
         </div>
     )
 }

@@ -21,17 +21,27 @@
         align-items: center;
 
         .form-login {
+            width: 65%;
+
             h2 {
                 color: white;
-                margin-bottom: 40px;
+                margin-bottom: 20px;
                 font-size: 25px;
             }
 
+            p {
+                font-size: 17px;
+                color: white;
+                font-weight: 600;
+                text-align: start;
+            }
+
             .form-input {
-                .ant-form-item-required {
-                    color: white;
-                    font-size: 17px;
+
+                .input {
+                    height: 37px;
                 }
+
 
             }
 
@@ -40,6 +50,9 @@
                 height: 40px;
                 background: rgb(5, 121, 223);
                 border-radius: 10px;
+                font-weight: 600;
+                font-size: 13px;
+                margin-bottom: 20px;
             }
 
             .button:hover {
