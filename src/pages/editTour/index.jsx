@@ -9,11 +9,14 @@ import {
   Space,
   DatePicker,
 } from "antd";
-import { useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { UploadOutlined } from "@ant-design/icons";
-import { get, postForm } from "../../utils/axios-http/axios-http";
+import { get, patchForm, postForm } from "../../utils/axios-http/axios-http";
+import { useNavigate } from "react-router-dom";
+import moment from "moment";
 
-function CreateNew() {
+function EditTour() {
+  const { tourId } = useParams();
   const [form] = Form.useForm();
   const { Option } = Select;
   const [fileList, setFileList] = useState([]);
@@ -30,16 +33,55 @@ function CreateNew() {
 
   const fetchApi = async () => {
     try {
-      const categoriesData = await get("category/get-all-category");
-      const departuresData = await get("departure/get-all-departure");
-      const destinationsData = await get("destination/get-tree");
-      const transportationsData = await get(
-        "transportation/get-all-transportation"
-      );
+      const [
+        tourDetail,
+        categoriesData,
+        departuresData,
+        destinationsData,
+        transportationsData,
+      ] = await Promise.all([
+        get(`tours/detail/${tourId}`),
+        get("category/get-all-category"),
+        get("departure/get-all-departure"),
+        get("destination/get-tree"),
+        get("transportation/get-all-transportation"),
+      ]);
+
       setCategories(categoriesData.categories || []);
       setDepartures(departuresData.departures || []);
       setDestinations(destinationsData || []);
       setTransportations(transportationsData.transportations || []);
+
+      const tourDetailFormat = tourDetail.tourDetails.map((item) => ({
+        ...item,
+        dayStart: moment(item.dayStart),
+        dayReturn: moment(item.dayReturn),
+      }));
+
+      form.setFieldsValue({
+        title: tourDetail.tour.title,
+        categoryId: tourDetail.category.id,
+        departureId: tourDetail.departure.id,
+        destinationId: tourDetail.destination.id,
+        transportationId: tourDetail.transportation.id,
+        information: tourDetail.information,
+        schedule: tourDetail.schedule || [],
+        tourDetail: tourDetailFormat || [],
+        attractions: tourDetail.information.attractions,
+        cuisine: tourDetail.information.cuisine,
+        suitableObject: tourDetail.information.suitableObject,
+        idealTime: tourDetail.information.idealTime,
+        vehicle: tourDetail.information.vehicle,
+        promotion: tourDetail.information.promotion,
+      });
+      const images = tourDetail.images.map((image) => {
+        return {
+          uid: image.id,
+          url: image.source,
+        };
+      });
+
+      setFileList(images);
     } catch (error) {
       console.error("Lỗi khi gọi API:", error);
     }
@@ -80,8 +122,6 @@ function CreateNew() {
     // Thêm chi tiết tour
     formData.append("tour_detail", JSON.stringify(values.tour_detail || []));
 
-    console.log(fileList);
-
     fileList.forEach((file) => {
       if (file.originFileObj) {
         formData.append("images", file.originFileObj);
@@ -89,16 +129,16 @@ function CreateNew() {
     });
 
     try {
-      const response = await postForm("tours/create", formData);
+      const response = await patchForm(`tours/edit/${tourId}`, formData);
       if (response) {
-        message.success("Tạo mới tour thành công!");
+        message.success("Cập nhật tour thành công!");
         setLoading(false);
         form.resetFields();
         navigate("/tour");
       }
     } catch (error) {
       console.error("Đã xảy ra lỗi:", error);
-      message.error("Tạo mới tour thất bại, vui lòng thử lại!");
+      message.error("Cập nhật tour thất bại, vui lòng thử lại!");
     }
   };
   const renderDestinations = (items, level = 0) => {
@@ -289,7 +329,7 @@ function CreateNew() {
 
         {/* Tour Detail */}
         <Form.List
-          name="tour_detail"
+          name="tourDetail"
           initialValue={[
             {
               adultPrice: "",
@@ -454,7 +494,7 @@ function CreateNew() {
         <Form.Item
           label="Image Upload"
           name={[name, "image"]}
-          rules={[{ required: true, message: "Vui lòng tải lên ảnh" }]}
+          rules={[{ required: false, message: "Vui lòng tải lên ảnh" }]}
         >
           <Upload
             listType="picture-card"
@@ -471,11 +511,11 @@ function CreateNew() {
         </Form.Item>
 
         <Button loading={loading} type="primary" htmlType="submit">
-          Tạo Tour
+          Cập nhật
         </Button>
       </Form>
     </div>
   );
 }
 
-export default CreateNew;
+export default EditTour;

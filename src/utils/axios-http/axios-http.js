@@ -1,8 +1,9 @@
 /* eslint-disable */
 import axios from 'axios';
 
-const baseURL =
-    import.meta.env.VITE_APP_URL_BE;
+const baseURL = "http://localhost:5000/api/admin";
+// const baseURL =
+//     import.meta.env.VITE_APP_URL_BE;
 
 
 const createAxiosInstance = (baseURL, headers = {}) => {
@@ -36,15 +37,16 @@ const handleError = (error) => {
 
 // Phương thức GET
 
-const get = async (path) => {
+const get = async (path, params = {}) => {
     try {
-        const response = await axiosInstance.get(`/${path}`);
+        const response = await axiosInstance.get(`/${path}`, {
+            params
+        });
         return response.data;
     } catch (error) {
         handleError(error);
     }
 };
-
 // Phương thức POST
 const post = async (path, data) => {
     try {
