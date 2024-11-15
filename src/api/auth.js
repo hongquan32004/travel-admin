@@ -10,7 +10,7 @@ export const login = async (data) => {
         } = data;
 
 
-        axios.post(`${baseUrl}/auth/login`, {
+        await axios.post(`${baseUrl}/auth/login`, {
                 email: email,
                 password: password
             })
