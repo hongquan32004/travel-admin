@@ -278,6 +278,8 @@ function Destination() {
           loading={loading}
           rowKey="id"
           className="dashboard-table"
+          style={{ marginTop: '30px' }}
+          pagination={{ pageSize: 5 }}
         />
         {/* Edit Modal */}
         <Modal

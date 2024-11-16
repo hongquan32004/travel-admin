@@ -10,6 +10,7 @@ import {
   Input,
 } from "antd";
 import { get, patch } from "../../utils/axios-http/axios-http";
+import './style.scss'
 import { useNavigate } from "react-router-dom";
 import checkPermission from "../../utils/axios-http/checkPermission";
 import { useSelector } from "react-redux";
@@ -280,21 +281,22 @@ function Tour() {
         <Button
           onClick={fetchExpiringTours}
           type={typeButtonTwo ? "primary" : ""}
-          style={{ marginRight: 10 }}
+          style={{ marginRight: 10, marginLeft: '20px' }}
         >
           Tour sắp hết hạn
         </Button>
         <Button
           onClick={fetchExpiredTours}
           type={typeButtonOne ? "primary" : ""}
+          style={{ marginRight: 10, marginLeft: '10px' }}
         >
           Tour hết hạn
         </Button>
-        <Button onClick={clearFilters}>Quay lại Quản lý Tour</Button>
+        <Button onClick={clearFilters} style={{ marginRight: 10, marginLeft: '10px' }}>Quay lại Quản lý Tour</Button>
         <Search
           placeholder="Nhập tour muốn tìm kiếm"
           onSearch={(value) => setFilters({ ...filters, title: value })}
-          style={{ width: 200 }}
+          style={{ width: 200, marginRight: 10, marginLeft: '10px' }}
         />
       </div>
 
@@ -367,6 +369,8 @@ function Tour() {
         columns={columns}
         dataSource={tour}
         loading={loading}
+        className="dashboard-table"
+        pagination={{ pageSize: 5 }}
       />
     </div>
   );

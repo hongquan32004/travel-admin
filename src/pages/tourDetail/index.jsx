@@ -136,6 +136,7 @@ function TourDetail() {
                     dataSource={tourDetail ? [tourDetail] : []}
                     rowKey={(record) => record.tour.id}
                     pagination={false}
+                    className='dashboard-table'
                 />
                 <div className="tour-information">
                     <h1>Thông tin thêm về chuyến đi</h1>
@@ -175,7 +176,7 @@ function TourDetail() {
                 {/* Lịch Trình */}
                 <div className="tour-schedule">
                     <h1>Lịch Trình</h1>
-                    <Collapse accordion>
+                    <Collapse accordion style={{ width: '90%', margin: 'auto' }}>
                         {tourDetail?.schedule?.map((item) => (
                             <Panel header={`Ngày ${item.day}: ${item.title}`} key={item.id}>
                                 <p>{item.information}</p>
@@ -194,13 +195,14 @@ function TourDetail() {
                         ))}
                     </div>
                 </div>
-                <div className="tour-details-table">
+                <div className="tour-details-table" style={{ textAlign: 'center' }}>
                     <h1>Chi tiết tour</h1>
                     <Table
                         columns={tourDetailsColumns}
                         dataSource={tourDetail?.tourDetails}
                         rowKey="id"
                         pagination={false}
+                        className='dashboard-table'
                     />
                 </div>
             </div>

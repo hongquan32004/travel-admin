@@ -41,11 +41,11 @@ function Dashboard() {
     };
 
     const monthlyStatsData = {
-        labels: dashboardTours?.monthlyStats?.map(stat => `Tháng ${stat.month}/${stat.year}`) || [],
+        labels: dashboardTours?.monthlyStats?.map(stat => `Tháng ${stat.month}/${stat.year}`).reverse() || [],
         datasets: [
             {
                 label: 'Số lượng',
-                data: dashboardTours?.monthlyStats?.map(stat => stat.count) || [],
+                data: dashboardTours?.monthlyStats?.map(stat => stat.count).reverse() || [],
                 fill: false,
                 borderColor: '#42A5F5',
                 pointBackgroundColor: '#42A5F5'
@@ -54,11 +54,11 @@ function Dashboard() {
     };
 
     const weeklyStatsData = {
-        labels: dashboardTours?.weeklyStats?.map(stat => `Tuần ${stat.week}/${stat.year}`) || [],
+        labels: dashboardTours?.weeklyStats?.map(stat => `Tuần ${stat.week}/${stat.year}`).reverse() || [],
         datasets: [
             {
                 label: 'Số lượng',
-                data: dashboardTours?.weeklyStats?.map(stat => stat.count) || [],
+                data: dashboardTours?.weeklyStats?.map(stat => stat.count).reverse() || [],
                 fill: false,
                 borderColor: '#66BB6A',
                 pointBackgroundColor: '#66BB6A'
@@ -79,11 +79,11 @@ function Dashboard() {
     };
 
     const monthlyRevenueData = {
-        labels: dashboardOders?.revenueByMonth?.map(item => `Tháng ${item.month}/${item.year}`) || [],
+        labels: dashboardOders?.revenueByMonth?.map(item => `Tháng ${item.month}/${item.year}`).reverse() || [],
         datasets: [
             {
                 label: 'Doanh thu',
-                data: dashboardOders?.revenueByMonth?.map(item => parseFloat(item.revenue)) || [],
+                data: dashboardOders?.revenueByMonth?.map(item => parseFloat(item.revenue)).reverse() || [],
                 fill: false,
                 borderColor: '#42A5F5',
                 pointBackgroundColor: '#42A5F5'
@@ -92,11 +92,11 @@ function Dashboard() {
     };
 
     const weeklyRevenueData = {
-        labels: dashboardOders?.revenueByWeek?.map(item => `Tuần ${item.week}/${item.year}`) || [],
+        labels: dashboardOders?.revenueByWeek?.map(item => `Tuần ${item.week}/${item.year}`).reverse() || [],
         datasets: [
             {
                 label: 'Doanh thu',
-                data: dashboardOders?.revenueByWeek?.map(item => parseFloat(item.revenue)) || [],
+                data: dashboardOders?.revenueByWeek?.map(item => parseFloat(item.revenue)).reverse() || [],
                 fill: false,
                 borderColor: '#66BB6A',
                 pointBackgroundColor: '#66BB6A'
@@ -105,10 +105,10 @@ function Dashboard() {
     };
 
     const paymentMethodRevenueData = {
-        labels: dashboardOders?.revenueByPaymentMethod?.map(item => item.paymentMethod) || [],
+        labels: dashboardOders?.revenueByPaymentMethod?.map(item => item.paymentMethod).reverse() || [],
         datasets: [
             {
-                data: dashboardOders?.revenueByPaymentMethod?.map(item => parseFloat(item.revenue)) || [],
+                data: dashboardOders?.revenueByPaymentMethod?.map(item => parseFloat(item.revenue)).reverse() || [],
                 backgroundColor: ['#FF6384', '#36A2EB'],
                 hoverBackgroundColor: ['#FF6384', '#36A2EB']
             }
@@ -116,11 +116,11 @@ function Dashboard() {
     };
 
     const cancellationRateData = {
-        labels: dashboardOders?.cancellationRate?.map(item => `Tháng ${item.month}/${item.year}`) || [],
+        labels: dashboardOders?.cancellationRate?.map(item => `Tháng ${item.month}/${item.year}`).reverse() || [],
         datasets: [
             {
                 label: 'Tỷ lệ hủy',
-                data: dashboardOders?.cancellationRate?.map(item => parseFloat(item.cancelRate)) || [],
+                data: dashboardOders?.cancellationRate?.map(item => parseFloat(item.cancelRate)).reverse() || [],
                 backgroundColor: '#FFCA28',
                 borderColor: '#FFCA28',
                 borderWidth: 1
@@ -157,7 +157,7 @@ function Dashboard() {
                         ))}
                     </div>
 
-                    <div className="chart-section">
+                    <div className="chart-section" style={{ background: '#FF6600' }}>
                         <h3>Tour được đặt nhiều nhất</h3>
                         {dashboardTours?.mostBookedTour?.map((item) => (
                             <p key={item.id}>{item.title}</p>
@@ -166,44 +166,34 @@ function Dashboard() {
                 </div>
 
             </div>
-            {/* <div className="order-statistics">
+            <div className="order-statistics">
                 <h2>Thống kê Đơn hàng</h2>
-
-                <div className="chart-section">
-                    <h3>Trạng thái Đơn hàng</h3>
-                    <Doughnut data={orderStatusData} />
+                <div className="doughnut-container">
+                    <div className="chart-section">
+                        <h3>Trạng thái Đơn hàng</h3>
+                        <Doughnut data={orderStatusData} />
+                    </div>
+                    <div className="chart-section">
+                        <h3>Doanh thu theo phương thức thanh toán</h3>
+                        <Doughnut data={paymentMethodRevenueData} />
+                    </div>
                 </div>
+                <div className="line-container">
+                    <div className="chart-section">
+                        <h3>Doanh thu theo tháng</h3>
+                        <Line data={monthlyRevenueData} />
+                    </div>
 
-                <div className="chart-section">
-                    <h3>Doanh thu theo tháng</h3>
-                    <Line data={monthlyRevenueData} />
+                    <div className="chart-section">
+                        <h3>Doanh thu theo tuần</h3>
+                        <Line data={weeklyRevenueData} />
+                    </div>
                 </div>
-
-                <div className="chart-section">
-                    <h3>Doanh thu theo tuần</h3>
-                    <Line data={weeklyRevenueData} />
-                </div>
-
-                <div className="chart-section">
-                    <h3>Doanh thu theo phương thức thanh toán</h3>
-                    <Doughnut data={paymentMethodRevenueData} />
-                </div>
-
-                <div className="chart-section">
+                <div className="bar-container">
                     <h3>Tỷ lệ hủy đơn hàng</h3>
                     <Bar data={cancellationRateData} />
                 </div>
-            </div> */}
-
-            {/* <div className="orders-by-tour">
-                <h2>Đơn hàng theo Tour</h2>
-                {dashboardOders?.ordersByTour?.map(item => (
-                    <div key={item.tourName}>
-                        <h3>{item.tourName}</h3>
-                        <p>Số đơn hàng: {item.orderCount}</p>
-                    </div>
-                ))}
-            </div> */}
+            </div>
         </div>
     );
 }

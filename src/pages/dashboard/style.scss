@@ -2,8 +2,7 @@
     width: 97%;
     padding: 20px;
 
-    .tour-statistics,
-    .order-statistics {
+    .tour-statistics {
         padding: 10px;
         margin: auto;
         // margin-bottom: 20px;
@@ -28,6 +27,7 @@
             .chart-section {
                 width: 45%; // Làm nhỏ từng phần
                 margin-bottom: 20px;
+                text-align: center;
 
                 canvas {
                     max-width: 100%; // Giữ tỷ lệ đồ thị trong giới hạn của container
@@ -40,22 +40,69 @@
             display: flex;
             justify-content: space-between;
             margin-top: 20px;
+            padding: 10px;
 
             .chart-section {
                 width: 45%;
+                border: 1px solid #f0f0f0;
+                border-radius: 8px;
+                box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+                background: #6699FF;
+                color: white;
+
+                h3 {
+                    margin-left: 150px;
+                    font-size: 24px;
+                }
 
                 p {
-                    margin: 5px 0;
+                    margin: 10px 10px;
+                    font-size: 19px;
+                    font-style: italic;
                 }
             }
         }
     }
 
-    .orders-by-tour {
+    .order-statistics {
+        margin-top: 40px;
         padding: 10px;
         background-color: #fff;
         border-radius: 8px;
         box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+
+        .doughnut-container,
+        .line-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: flex-start;
+
+            .chart-section {
+                width: 45%; // Làm nhỏ từng phần
+                margin-bottom: 20px;
+                text-align: center;
+
+                canvas {
+                    max-width: 100%; // Giữ tỷ lệ đồ thị trong giới hạn của container
+                    max-height: 300px; // Hạn chế chiều cao tối đa
+                }
+            }
+        }
+
+        .bar-container {
+            width: 50%;
+            margin-bottom: 20px;
+            text-align: center;
+            margin: auto;
+
+            canvas {
+                max-width: 100%; // Giữ tỷ lệ đồ thị trong giới hạn của container
+                max-height: 300px; // Hạn chế chiều cao tối đa
+            }
+
+
+        }
 
         h2 {
             text-align: center;
