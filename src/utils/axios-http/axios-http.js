@@ -1,10 +1,10 @@
 /* eslint-disable */
 import axios from 'axios';
 
-const baseURL = "http://localhost:5000/api/admin";
 
-// const baseURL =
-//     import.meta.env.VITE_APP_URL_BE;
+
+const baseURL =
+    import.meta.env.VITE_APP_URL_BE;
 
 
 const createAxiosInstance = (baseURL, headers = {}) => {

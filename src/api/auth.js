@@ -1,9 +1,8 @@
 import axios from "axios";
 
-// const baseUrl =
-//     import.meta.env.VITE_APP_URL_BE;
+const baseUrl =
+    import.meta.env.VITE_APP_URL_BE;
 
-const baseUrl = "http://localhost:5000/api/admin";
 
 export const login = async (data) => {
     try {

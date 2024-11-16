@@ -11,7 +11,7 @@ const PrivateRoute = () => {
   const [isAuthorized, setIsAuthorized] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const baseUrl = "http://localhost:5000/api/admin";
+  const baseUrl = import.meta.env.VITE_APP_URL_BE;
 
   useEffect(() => {
     const verifyToken = async () => {
