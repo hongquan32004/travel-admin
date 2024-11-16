@@ -53,18 +53,18 @@ function TourDetail() {
             render: (isFeatured) => (isFeatured ? 'Có' : 'Không'),
         },
         {
-            title: 'Destination ID',
-            dataIndex: ['tour', 'destinationId'],
+            title: 'Điểm đến',
+            dataIndex: ['destination', 'title'],
             key: 'destinationId',
         },
         {
-            title: 'Transportation ID',
-            dataIndex: ['tour', 'transportationId'],
+            title: 'Phương tiện',
+            dataIndex: ['transportation', 'title'],
             key: 'transportationId',
         },
         {
-            title: 'Departure ID',
-            dataIndex: ['tour', 'departureId'],
+            title: 'Điểm khởi hành',
+            dataIndex: ['departure', 'title'],
             key: 'departureId',
         },
         {
