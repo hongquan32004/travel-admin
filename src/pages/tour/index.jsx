@@ -11,6 +11,8 @@ import {
 } from "antd";
 import { get, patch } from "../../utils/axios-http/axios-http";
 import { useNavigate } from "react-router-dom";
+import checkPermission from "../../utils/axios-http/checkPermission";
+
 import moment from "moment";
 
 const { Option } = Select;
@@ -18,7 +20,6 @@ const { Search } = Input;
 
 function Tour() {
   const [tour, setTour] = useState([]);
-  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [categories, setCategories] = useState([]);
   const [departures, setDepartures] = useState([]);
@@ -27,7 +28,7 @@ function Tour() {
   const [typeButtonOne, setTypeButtonOne] = useState("");
   const [typeButtonTwo, setTypeButtonTwo] = useState("");
 
-  // Query parameters for filtering
+  const navigate = useNavigate();
   const [filters, setFilters] = useState({
     destinationTo: "",
     departureFrom: "",
@@ -40,43 +41,9 @@ function Tour() {
     title: "",
   });
 
-  const viewDetails = (tourID) => {
-    navigate(`/tour-detail/${tourID}`);
-  };
-
-  const editTour = (tourID) => {
-    navigate(`/edit-tour/${tourID}`);
-  };
-
-  const handleChangeStatus = async (tourId, status) => {
-    setLoading(true);
-    try {
-      const option = { status: !status };
-      await patch(`tours/status/${tourId}`, option);
-      message.success("Cập nhật trạng thái tour thành công!");
-      fetchDataTour();
-    } catch (error) {
-      message.error("Cập nhật trạng thái tour thất bại!");
-    }
-    setLoading(false);
-  };
-
-  const handleChangeFeatured = async (tourId, isFeatured) => {
-    setLoading(true);
-    try {
-      const option = { isFeatured: !isFeatured };
-      await patch(`tours/featured/${tourId}`, option);
-      message.success("Cập nhật tour nổi bật thành công!");
-      fetchDataTour();
-    } catch (error) {
-      message.error("Cập nhật tour nổi bật thất bại!");
-    }
-    setLoading(false);
-  };
-
   const fetchDataTour = useCallback(async () => {
+    setLoading(true);
     try {
-      setLoading(true);
       const [
         response,
         categoriesData,
@@ -90,6 +57,7 @@ function Tour() {
         get("destination/get-tree"),
         get("transportation/get-all-transportation"),
       ]);
+
       setCategories(categoriesData.categories || []);
       setDepartures(departuresData.departures || []);
       setDestinations(destinationsData || []);
@@ -106,28 +74,32 @@ function Tour() {
     fetchDataTour();
   }, [filters]);
 
-  const removeTour = async (tourID) => {
+  const handleStatusChange = async (tourId, status) => {
+    setLoading(true);
     try {
-      await patch(`tours/remove/${tourID}`);
-      message.success("Xóa tour thành công");
-      setTour((prevTours) => prevTours.filter((item) => item.id !== tourID));
+      await patch(`tours/status/${tourId}`, { status: !status });
+      message.success("Cập nhật trạng thái tour thành công!");
+      fetchDataTour();
     } catch (error) {
-      message.error("Xóa tour thất bại");
+      message.error("Cập nhật trạng thái tour thất bại!");
+    } finally {
+      setLoading(false);
     }
   };
 
-  const renderDestinations = (items, level = 0) => {
-    return items.map((destination) => (
-      <>
-        <Option key={destination.id} value={destination.id}>
-          {`${"--".repeat(level)} ${destination.title}`}
-        </Option>
-        {destination.children && destination.children.length > 0 && (
-          <>{renderDestinations(destination.children, level + 1)}</>
-        )}
-      </>
-    ));
+  const handleFeaturedChange = async (tourId, isFeatured) => {
+    setLoading(true);
+    try {
+      await patch(`tours/featured/${tourId}`, { isFeatured: !isFeatured });
+      message.success("Cập nhật tour nổi bật thành công!");
+      fetchDataTour();
+    } catch (error) {
+      message.error("Cập nhật tour nổi bật thất bại!");
+    } finally {
+      setLoading(false);
+    }
   };
+
   const fetchExpiringTours = async () => {
     setTypeButtonOne("");
     setTypeButtonTwo("primary");
@@ -168,15 +140,39 @@ function Tour() {
       status: "",
       isFeatured: "",
       sortOrder: "",
+      title: "",
     });
     fetchDataTour();
+  };
+
+  const removeTour = async (tourID) => {
+    try {
+      await patch(`tours/remove/${tourID}`);
+      message.success("Xóa tour thành công");
+      setTour((prevTours) => prevTours.filter((item) => item.id !== tourID));
+    } catch (error) {
+      message.error("Xóa tour thất bại");
+    }
+  };
+
+  const renderDestinations = (items, level = 0) => {
+    return items.map((destination) => (
+      <React.Fragment key={destination.id}>
+        <Option value={destination.id}>
+          {`${"--".repeat(level)} ${destination.title}`}
+        </Option>
+        {destination.children &&
+          destination.children.length > 0 &&
+          renderDestinations(destination.children, level + 1)}
+      </React.Fragment>
+    ));
   };
 
   const columns = [
     {
       title: "STT",
       key: "index",
-      render: (text, record, index) => <a>{index + 1}</a>,
+      render: (_, __, index) => <span>{index + 1}</span>,
     },
     {
       title: "Tên tour",
@@ -202,10 +198,10 @@ function Tour() {
       dataIndex: "status",
       render: (status, record) => (
         <Tag
-          color={status == 1 ? "green" : "red"}
-          onClick={() => handleChangeStatus(record.id, status)}
+          color={status ? "green" : "red"}
+          onClick={() => handleStatusChange(record.id, status)}
         >
-          {status == 1 ? "Hoạt động" : "Không hoạt động"}
+          {status ? "Hoạt động" : "Không hoạt động"}
         </Tag>
       ),
     },
@@ -215,9 +211,10 @@ function Tour() {
       key: "isFeatured",
       render: (isFeatured, record) => (
         <Tag
-          color={isFeatured == 1 ? "green" : "red"}
-          onClick={() => handleChangeFeatured(record.id, isFeatured)}
-        > {isFeatured == 1 ? "Nổi bật" : "Không nổi bật"}
+          color={isFeatured ? "green" : "red"}
+          onClick={() => handleFeaturedChange(record.id, isFeatured)}
+        >
+          {isFeatured ? "Nổi bật" : "Không nổi bật"}
         </Tag>
       ),
     },
@@ -239,33 +236,23 @@ function Tour() {
       render: (dayReturn) => moment(dayReturn).format("DD-MM-YYYY"),
     },
     {
-      title: "Thể loại",
-      dataIndex: "categories",
-      key: "categories",
-    },
-    {
-      title: "Điểm đến",
-      dataIndex: "destination",
-      key: "destination",
-    },
-    {
-      title: "Điểm khởi hành",
-      dataIndex: "departure",
-      key: "departure",
-    },
-    {
-      title: "Phương tiện",
-      dataIndex: "transportation",
-      key: "transportation",
-    },
-    {
       title: "Hành động",
       key: "action",
       render: (_, record) => (
         <Space size="middle">
-          <a onClick={() => viewDetails(record.id)}>Xem chi tiết</a>
-          <a onClick={() => editTour(record.id)}>Sửa</a>
-          <a onClick={() => removeTour(record.id)}>Xóa</a>
+          {checkPermission("READ_TOUR") && (
+            <Button onClick={() => navigate(`/tour-detail/${record.id}`)}>
+              Xem chi tiết
+            </Button>
+          )}
+          {checkPermission("UPDATE_TOUR") && (
+            <Button onClick={() => navigate(`/edit-tour/${record.id}`)}>
+              Sửa
+            </Button>
+          )}
+          {checkPermission("DELETE_TOUR") && (
+            <Button onClick={() => removeTour(record.id)}>Xóa</Button>
+          )}
         </Space>
       ),
     },
@@ -274,20 +261,26 @@ function Tour() {
   return (
     <div className="tour-container">
       <div style={{ marginBottom: 20 }}>
-        <Button
-          onClick={() => navigate("/create-new")}
-          style={{ background: "blue", color: "white" }}
-        >
-          Tạo mới
-        </Button>
+        {checkPermission("CREATE_TOUR") && (
+          <Button
+            onClick={() => navigate("/create-new")}
+            style={{ background: "blue", color: "white" }}
+          >
+            Tạo mới
+          </Button>
+        )}
+
         <Button
           onClick={fetchExpiringTours}
-          type={typeButtonTwo}
+          type={typeButtonTwo ? "primary" : ""}
           style={{ marginRight: 10 }}
         >
           Tour sắp hết hạn
         </Button>
-        <Button onClick={fetchExpiredTours} type={typeButtonOne}>
+        <Button
+          onClick={fetchExpiredTours}
+          type={typeButtonOne ? "primary" : ""}
+        >
           Tour hết hạn
         </Button>
         <Button onClick={clearFilters}>Quay lại Quản lý Tour</Button>
@@ -311,7 +304,9 @@ function Tour() {
         <Select
           style={{ width: 200, marginRight: 10 }}
           placeholder="Chọn điểm khởi hành"
-          onChange={(value) => setFilters({ ...filters, departureFrom: value })}
+          onChange={(value) =>
+            setFilters((prev) => ({ ...prev, departureFrom: value }))
+          }
         >
           <Option value="">Tất cả</Option>
           {departures.map((departure) => (
@@ -322,29 +317,34 @@ function Tour() {
         </Select>
 
         <DatePicker
-          style={{ marginRight: 10 }} placeholder="Chọn ngày bắt đầu"
+          placeholder="Ngày đi"
+          style={{ marginRight: 10 }}
           onChange={(date, dateString) =>
-            setFilters({ ...filters, fromDate: dateString })
+            setFilters((prev) => ({ ...prev, fromDate: dateString }))
           }
         />
 
         <Select
           style={{ width: 200, marginRight: 10 }}
-          placeholder="Chọn phương tiện"
-          onChange={(value) => setFilters({ ...filters, transTypeId: value })}
+          placeholder="Loại phương tiện"
+          onChange={(value) =>
+            setFilters((prev) => ({ ...prev, transTypeId: value }))
+          }
         >
           <Option value="">Tất cả</Option>
-          {transportations.map((transportation) => (
-            <Option key={transportation.id} value={transportation.id}>
-              {transportation.title}
+          {transportations.map((transport) => (
+            <Option key={transport.id} value={transport.id}>
+              {transport.title}
             </Option>
           ))}
         </Select>
 
         <Select
-          style={{ width: 200, marginRight: 10 }}
-          placeholder="Chọn danh mục"
-          onChange={(value) => setFilters({ ...filters, categoryId: value })}
+          style={{ width: 200 }}
+          placeholder="Danh mục"
+          onChange={(value) =>
+            setFilters((prev) => ({ ...prev, categoryId: value }))
+          }
         >
           <Option value="">Tất cả</Option>
           {categories.map((category) => (
@@ -353,37 +353,6 @@ function Tour() {
             </Option>
           ))}
         </Select>
-
-        <Select
-          style={{ width: 200, marginRight: 10 }}
-          placeholder="Chọn trạng thái"
-          onChange={(value) => setFilters({ ...filters, status: value })}
-        >
-          <Option value="">Tất cả</Option>
-          <Option value="1">Hoạt động</Option>
-          <Option value="0">Không hoạt động</Option>
-        </Select>
-
-        <Select
-          style={{ width: 200, marginRight: 10 }}
-          placeholder="Chọn nổi bật"
-          onChange={(value) => setFilters({ ...filters, isFeatured: value })}
-        >
-          <Option value="">Tất cả</Option>
-          <Option value="1">Nổi bật</Option>
-          <Option value="0">Không nổi bật</Option>
-        </Select>
-
-        <Select
-          style={{ width: 200, marginRight: 10 }}
-          placeholder="Sắp xếp theo"
-          onChange={(value) => setFilters({ ...filters, sortOrder: value })}
-        >
-          <Option value="asc">Tăng dần</Option>
-          <Option value="desc">Giảm dần</Option>
-        </Select>
-
-        <Button onClick={clearFilters}>Làm mới bộ lọc</Button>
       </div>
 
       <Table
@@ -391,7 +360,6 @@ function Tour() {
         columns={columns}
         dataSource={tour}
         loading={loading}
-        className="dashboard-table"
       />
     </div>
   );

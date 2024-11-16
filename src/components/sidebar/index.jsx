@@ -1,4 +1,4 @@
-import { useSelector } from "react-redux"; // Đảm bảo bạn đã import useSelector
+import { useSelector } from "react-redux";
 import "./style.scss";
 import { NavLink } from "react-router-dom";
 import Logo from "../../assets/images/logo.png";
@@ -14,7 +14,7 @@ import Transportations from "../../assets/images/transportations.png";
 function Sidebar() {
   const title = "Trang chủ";
 
-  const permissions = useSelector((state) => state.permissions.list);
+  const permissions = useSelector((state) => state.admin.permissions);
 
   const navData = [
     {

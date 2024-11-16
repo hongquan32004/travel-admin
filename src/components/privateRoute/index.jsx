@@ -1,24 +1,34 @@
 import { useEffect, useState } from "react";
 import { Navigate, Outlet, useNavigate } from "react-router-dom";
-import { get, post } from "../../utils/axios-http/axios-http";
+import { get } from "../../utils/axios-http/axios-http";
 import { Spin, message } from "antd";
-import { useDispatch, useSelector } from "react-redux";
-import { setPermissions } from "../../slice/permissionSlice";
+import { useDispatch } from "react-redux";
+import { setPermissions, setAdminInfo } from "../../slice/adminSlice";
+import axios from "axios";
 
 const PrivateRoute = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthorized, setIsAuthorized] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const baseUrl = "http://localhost:5000/api/admin";
 
   useEffect(() => {
     const verifyToken = async () => {
       try {
         // Kiểm tra token
-        const verifyResponse = await post("auth/verify-token");
-        const adminId = verifyResponse;
+        const token = localStorage.getItem("token");
+        const verifyResponse = await axios.post(
+          `${baseUrl}/auth/verify-token`,
+          { token: token }
+        );
+
+        const adminId = verifyResponse.data.id;
+        const fullName = verifyResponse.data.fullName;
+        const avatar = verifyResponse.data.avatar;
 
         const roleResponse = await get(`roles/detail/${adminId}`);
+        const roleName = roleResponse.name;
 
         const permissionsResponse = await get(
           `roles/${roleResponse.id}/permissions`
@@ -26,6 +36,8 @@ const PrivateRoute = () => {
         const permissions = permissionsResponse.permissions.map(
           (item) => item.name
         );
+
+        dispatch(setAdminInfo({ id: adminId, fullName, roleName, avatar }));
         dispatch(setPermissions(permissions));
 
         if (permissionsResponse.permissions.length > 0) {
@@ -45,7 +57,7 @@ const PrivateRoute = () => {
     };
 
     verifyToken();
-  }, []);
+  }, [dispatch, navigate]);
 
   if (isLoading) {
     return (
