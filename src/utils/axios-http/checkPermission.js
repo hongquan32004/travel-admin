@@ -5,14 +5,14 @@ import {
   useMemo
 } from "react";
 
-const useCheckPermission = (permissionName) => {
+const checkPermission = (permissionName) => {
   const permissions = useSelector((state) => state.admin.permissions);
+  // const hasPermission = useMemo(() => {
 
-  const hasPermission = useMemo(() => {
-    return permissions.includes(permissionName);
-  }, [permissions, permissionName]);
+  // }, [permissions, permissionName]);
 
-  return hasPermission;
+  // return hasPermission;
+  return permissions.includes(permissionName);
 };
 
-export default useCheckPermission;
+export default checkPermission;
