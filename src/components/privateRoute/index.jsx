@@ -33,7 +33,7 @@ const PrivateRoute = () => {
         const permissionsResponse = await get(
           `roles/${roleResponse.id}/permissions`
         );
-        const permissions = permissionsResponse.permissions.map(
+        const permissions = await permissionsResponse.permissions.map(
           (item) => item.name
         );
 
@@ -57,7 +57,7 @@ const PrivateRoute = () => {
     };
 
     verifyToken();
-  }, [dispatch, navigate]);
+  }, []);
 
   if (isLoading) {
     return (

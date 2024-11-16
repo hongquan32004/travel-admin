@@ -12,6 +12,7 @@ import {
 import { get, patch } from "../../utils/axios-http/axios-http";
 import { useNavigate } from "react-router-dom";
 import checkPermission from "../../utils/axios-http/checkPermission";
+import { useSelector } from "react-redux";
 
 import moment from "moment";
 
@@ -27,8 +28,6 @@ function Tour() {
   const [transportations, setTransportations] = useState([]);
   const [typeButtonOne, setTypeButtonOne] = useState("");
   const [typeButtonTwo, setTypeButtonTwo] = useState("");
-
-  const navigate = useNavigate();
   const [filters, setFilters] = useState({
     destinationTo: "",
     departureFrom: "",
@@ -40,9 +39,25 @@ function Tour() {
     sortOrder: "",
     title: "",
   });
+  // const [canCreate, setCanCreate] = useState(false);
+  // const [canView, setCanView] = useState(false);
+  // const [canUpdate, setCanEdit] = useState(false);
+  // const [canDelete, setCanDelete] = useState(false);
 
-  const fetchDataTour = useCallback(async () => {
-    setLoading(true);
+  const navigate = useNavigate();
+
+  // const permissions = useSelector((state) => state.admin.permissions);
+
+  // useEffect(() => {
+  //   if (permissions.length > 0) {
+  //     setCanCreate(checkPermission("CREATE_TOUR"));
+  //     setCanView(checkPermission("READ_TOUR"));
+  //     setCanEdit(checkPermission("UPDATE_TOUR"));
+  //     setCanDelete(checkPermission("DELETE_TOUR"));
+  //   }
+  // }, [permissions]);
+
+  const fetchDataTour = async () => {
     try {
       const [
         response,
@@ -68,7 +83,7 @@ function Tour() {
     } finally {
       setLoading(false);
     }
-  }, [filters]);
+  };
 
   useEffect(() => {
     fetchDataTour();
@@ -240,19 +255,13 @@ function Tour() {
       key: "action",
       render: (_, record) => (
         <Space size="middle">
-          {checkPermission("READ_TOUR") && (
-            <Button onClick={() => navigate(`/tour-detail/${record.id}`)}>
-              Xem chi tiết
-            </Button>
-          )}
-          {checkPermission("UPDATE_TOUR") && (
-            <Button onClick={() => navigate(`/edit-tour/${record.id}`)}>
-              Sửa
-            </Button>
-          )}
-          {checkPermission("DELETE_TOUR") && (
-            <Button onClick={() => removeTour(record.id)}>Xóa</Button>
-          )}
+          <Button onClick={() => navigate(`/tour-detail/${record.id}`)}>
+            Xem chi tiết
+          </Button>
+          <Button onClick={() => navigate(`/edit-tour/${record.id}`)}>
+            Sửa
+          </Button>
+          <Button onClick={() => removeTour(record.id)}>Xóa</Button>
         </Space>
       ),
     },
@@ -261,14 +270,12 @@ function Tour() {
   return (
     <div className="tour-container">
       <div style={{ marginBottom: 20 }}>
-        {checkPermission("CREATE_TOUR") && (
-          <Button
-            onClick={() => navigate("/create-new")}
-            style={{ background: "blue", color: "white" }}
-          >
-            Tạo mới
-          </Button>
-        )}
+        <Button
+          onClick={() => navigate("/create-new")}
+          style={{ background: "blue", color: "white" }}
+        >
+          Tạo mới
+        </Button>
 
         <Button
           onClick={fetchExpiringTours}

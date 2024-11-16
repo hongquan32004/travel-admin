@@ -11,7 +11,6 @@ import { useSelector } from "react-redux";
 import { get } from "../../utils/axios-http/axios-http";
 const Header = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
   const admin = useSelector((state) => state.admin.admin);
