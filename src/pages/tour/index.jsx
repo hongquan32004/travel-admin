@@ -370,7 +370,7 @@ function Tour() {
         dataSource={tour}
         loading={loading}
         className="dashboard-table"
-        pagination={{ pageSize: 5 }}
+        pagination={{ pageSize: 4 }}
       />
     </div>
   );
