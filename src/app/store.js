@@ -1,10 +1,10 @@
 import {
   configureStore
 } from '@reduxjs/toolkit'
-import permissionsReducer from "../slice/permissionSlice";
+import adminReducer from "../slice/adminSlice";
 
 export default configureStore({
   reducer: {
-    permissions: permissionsReducer,
+    admin: adminReducer,
   }
 })

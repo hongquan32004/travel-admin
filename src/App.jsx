@@ -16,23 +16,9 @@ import Permissions from "./pages/permissions";
 import Account from "./pages/account";
 import PrivateRoute from "./components/privateRoute";
 import EditTour from "./pages/editTour/";
-import { useSelector } from "react-redux";
+import checkPermission from "./utils/axios-http/checkPermission";
 
 function App() {
-  const permissions = useSelector((state) => state.permissions.list);
-
-  const isViewTour = permissions.includes("READ_TOUR");
-  const isViewCategory = permissions.includes("READ_CATEGORY");
-  const isViewDestination = permissions.includes("READ_DESTINATION");
-  const isViewDeparture = permissions.includes("READ_DEPARTURE");
-  const isViewTransportation = permissions.includes("READ_TRANSPORTATION");
-  const isViewOrder = permissions.includes("READ_ORDER");
-  const isViewRole = permissions.includes("READ_ROLES");
-  const isViewPermission = permissions.includes("READ_PERMISSIONS");
-  const isViewAccount = permissions.includes("READ_TOUR");
-
-  console.log(isViewTour, isViewCategory);
-
   const routes = useRoutes([
     {
       path: "login",
@@ -50,23 +36,35 @@ function App() {
             },
             {
               path: "/tour",
-              element: isViewTour ? <Tour /> : <Dashboard />,
+              element: checkPermission("READ_TOUR") ? <Tour /> : <Dashboard />,
             },
             {
               path: "/categories",
-              element: isViewCategory ? <Category /> : <Dashboard />,
+              element: checkPermission("READ_CATEGORY") ? (
+                <Category />
+              ) : (
+                <Dashboard />
+              ),
             },
             {
               path: "/departures",
-              element: isViewDeparture ? <Departure /> : <Dashboard />,
+              element: checkPermission("READ_DEPARTURE") ? (
+                <Departure />
+              ) : (
+                <Dashboard />
+              ),
             },
             {
               path: "/destinations",
-              element: isViewDestination ? <Destination /> : <Dashboard />,
+              element: checkPermission("READ_DESTINATION") ? (
+                <Destination />
+              ) : (
+                <Dashboard />
+              ),
             },
             {
               path: "/transportations",
-              element: isViewTransportation ? (
+              element: checkPermission("READ_TRANSPORTATION") ? (
                 <Transportation />
               ) : (
                 <Dashboard />
@@ -74,31 +72,55 @@ function App() {
             },
             {
               path: "/orders",
-              element: isViewOrder ? <Order /> : <Dashboard />,
+              element: checkPermission("READ_ORDER") ? (
+                <Order />
+              ) : (
+                <Dashboard />
+              ),
             },
             {
               path: "/roles",
-              element: isViewRole ? <Role /> : <Dashboard />,
+              element: checkPermission("READ_ROLES") ? <Role /> : <Dashboard />,
             },
             {
               path: "/permissions",
-              element: isViewPermission ? <Permissions /> : <Dashboard />,
+              element: checkPermission("READ_PERMISSIONS") ? (
+                <Permissions />
+              ) : (
+                <Dashboard />
+              ),
             },
             {
               path: "/accounts",
-              element: isViewAccount ? <Account /> : <Dashboard />,
+              element: checkPermission("READ_ACCOUNT") ? (
+                <Account />
+              ) : (
+                <Dashboard />
+              ),
             },
             {
               path: "/tour-detail/:tourID",
-              element: <TourDetail />,
+              element: checkPermission("READ_TOUR") ? (
+                <TourDetail />
+              ) : (
+                <Dashboard />
+              ),
             },
             {
               path: "/create-new",
-              element: <CreateNew />,
+              element: checkPermission("CREATE_TOUR") ? (
+                <CreateNew />
+              ) : (
+                <Dashboard />
+              ),
             },
             {
               path: "/edit-tour/:tourId",
-              element: <EditTour />,
+              element: checkPermission("UPDATE_TOUR") ? (
+                <EditTour />
+              ) : (
+                <Dashboard />
+              ),
             },
           ],
         },

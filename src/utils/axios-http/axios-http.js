@@ -1,23 +1,35 @@
 /* eslint-disable */
 import axios from 'axios';
 
+const baseURL = "http://localhost:5000/api/admin";
 
-const baseURL =
-    import.meta.env.VITE_APP_URL_BE;
+// const baseURL =
+//     import.meta.env.VITE_APP_URL_BE;
 
 
 const createAxiosInstance = (baseURL, headers = {}) => {
-    const token = localStorage.getItem("token");
-    return axios.create({
+    const instance = axios.create({
         baseURL,
         headers: {
-            'Authorization': token ? `Bearer ${token}` : '',
             'Accept': 'application/json',
             ...headers,
         },
     });
 
+    // Intercept request to attach token
+    instance.interceptors.request.use((config) => {
+        const token = localStorage.getItem("token");
+        if (token) {
+            config.headers['Authorization'] = `Bearer ${token}`;
+        }
+        return config;
+    }, (error) => {
+        return Promise.reject(error);
+    });
+
+    return instance;
 };
+
 
 // Instance dùng cho JSON
 const axiosInstance = createAxiosInstance(baseURL, {
@@ -32,7 +44,7 @@ const axiosInstanceForm = createAxiosInstance(baseURL);
 // Hàm xử lý lỗi chung
 const handleError = (error) => {
     console.error('Error:', error.response || error.message);
-    throw error; // Ném lỗi để xử lý ở mức cao hơn nếu cần
+    throw error;
 };
 
 // Phương thức GET

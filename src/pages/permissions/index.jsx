@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
-import './style.scss'
+import "./style.scss";
 import { Table, Button, message, Spin } from "antd";
+import { useDispatch } from "react-redux";
 import { deleteMethod, get, post } from "../../utils/axios-http/axios-http";
+// import { clearPermissions, setPermissions } from "../../slice/adminSlice";
 
 function Permissions() {
   const [permissions, setPermissions] = useState([]);
@@ -11,6 +13,7 @@ function Permissions() {
   });
   const [roles, setRoles] = useState([]);
   const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
 
   const fetchPermissions = async () => {
     setLoading(true);
@@ -198,9 +201,13 @@ function Permissions() {
           <Button type="primary" onClick={handleClick}>
             Cập nhật phân quyền
           </Button>
-          <Table className="dashboard-table" columns={columns} dataSource={data} pagination={false} />
+          <Table
+            className="dashboard-table"
+            columns={columns}
+            dataSource={data}
+            pagination={false}
+          />
         </div>
-
       </Spin>
     </>
   );

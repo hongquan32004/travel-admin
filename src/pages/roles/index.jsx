@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import './style.scss'
+import "./style.scss";
 import { Space, Table, Modal, message, Button } from "antd";
 import { get } from "../../utils/axios-http/axios-http";
 import { patch } from "../../utils/axios-http/axios-http";
@@ -13,6 +13,7 @@ function Role() {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [roleId, setRoleId] = useState("");
+
   const showModal = () => {
     setIsModalOpen(true);
   };
@@ -179,10 +180,10 @@ function Role() {
           loading={loading}
         >
           <form className="formUpdateRole">
-            <div className="role-item" style={{ marginBottom: '20px' }}>
+            <div className="role-item" style={{ marginBottom: "20px" }}>
               <span>Tên: </span>
               <input
-                style={{ marginLeft: '35px', width: '370px', height: '25px' }}
+                style={{ marginLeft: "35px", width: "370px", height: "25px" }}
                 value={name}
                 type="name"
                 onChange={(e) => setName(e.target.value)}
@@ -191,7 +192,7 @@ function Role() {
             <div className="role-item">
               <span>Mô tả: </span>
               <input
-                style={{ marginLeft: '20px', width: '370px', height: '25px' }}
+                style={{ marginLeft: "20px", width: "370px", height: "25px" }}
                 value={description}
                 type="description"
                 onChange={(e) => setDescription(e.target.value)}
