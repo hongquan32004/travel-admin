@@ -8,10 +8,12 @@ import {
   message,
   Space,
   DatePicker,
+  InputNumber,
 } from "antd";
 import { useNavigate } from "react-router-dom";
 import { UploadOutlined } from "@ant-design/icons";
 import { get, postForm } from "../../utils/axios-http/axios-http";
+import "./style.scss";
 
 function CreateNew() {
   const [form] = Form.useForm();
@@ -71,6 +73,7 @@ function CreateNew() {
         idealTime: values.idealTime || "",
         vehicle: values.vehicle || "",
         promotion: values.promotion || "",
+        suitableObject: values.suitableObject || "",
       })
     );
 
@@ -113,7 +116,13 @@ function CreateNew() {
       </>
     ));
   };
-
+  const currencyFormatter = (value) => {
+    if (!value) return "";
+    return `${value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} ₫`;
+  };
+  const currencyParser = (value) => {
+    return value.replace(/[^\d]/g, "");
+  };
   return (
     <div className="creatnew-container">
       <Form
@@ -124,7 +133,7 @@ function CreateNew() {
       >
         {/* Title */}
         <Form.Item
-          label="Title"
+          label="Tiêu đề"
           name="title"
           rules={[{ required: true, message: "Vui lòng nhập title" }]}
         >
@@ -133,7 +142,7 @@ function CreateNew() {
 
         {/* Category ID */}
         <Form.Item
-          label="Category ID"
+          label="Danh mục"
           name="categoryId"
           rules={[{ required: true, message: "Vui lòng chọn category" }]}
         >
@@ -148,7 +157,7 @@ function CreateNew() {
 
         {/* Departure ID */}
         <Form.Item
-          label="Departure ID"
+          label="Điểm khởi hành"
           name="departureId"
           rules={[{ required: true, message: "Vui lòng chọn điểm khởi hành" }]}
         >
@@ -163,7 +172,7 @@ function CreateNew() {
 
         {/* Destination ID */}
         <Form.Item
-          label="Destination ID"
+          label="Điểm đến"
           name="destinationId"
           rules={[{ required: true, message: "Vui lòng chọn điểm đến" }]}
         >
@@ -174,7 +183,7 @@ function CreateNew() {
 
         {/* Transportation ID */}
         <Form.Item
-          label="Transportation ID"
+          label="Phương tiện"
           name="transportationId"
           rules={[{ required: true, message: "Vui lòng chọn phương tiện" }]}
         >
@@ -188,34 +197,41 @@ function CreateNew() {
         </Form.Item>
 
         {/* Information */}
-        <Form.Item label="Information: " name="information">
+        <div className="form-list-title">Thông tin: </div>
+        <Form.Item name="information">
           <div className="form-information">
             <div className="if-input">
-              <p>Attractions: </p>
+              <p>Điểm tham quan: </p>
               <Form.Item name="attractions">
                 <Input className="input" placeholder="Nhập thông tin" />
               </Form.Item>
             </div>
             <div className="if-input">
-              <p>Cuisine: </p>
+              <p>Ẩm thực: </p>
               <Form.Item name="cuisine">
                 <Input className="input" placeholder="Nhập thông tin" />
               </Form.Item>
             </div>
             <div className="if-input">
-              <p>IdealTime: </p>
+              <p>Thời gian thích hợp: </p>
               <Form.Item name="idealTime">
                 <Input className="input" placeholder="Nhập thông tin" />
               </Form.Item>
             </div>
             <div className="if-input">
-              <p>Vehicle: </p>
+              <p>Đối tượng thích hợp: </p>
+              <Form.Item name="suitableObject">
+                <Input className="input" placeholder="Nhập thông tin" />
+              </Form.Item>
+            </div>
+            <div className="if-input">
+              <p>Phương tiện: </p>
               <Form.Item name="vehicle">
                 <Input className="input" placeholder="Nhập thông tin" />
               </Form.Item>
             </div>
             <div className="if-input">
-              <p>Promotion: </p>
+              <p>Ưu đãi: </p>
               <Form.Item name="promotion">
                 <Input className="input" placeholder="Nhập thông tin" />
               </Form.Item>
@@ -224,235 +240,281 @@ function CreateNew() {
         </Form.Item>
 
         {/* Schedule */}
-        <Form.List
-          name="schedule"
-          initialValue={[{ day: "", title: "", information: "" }]}
-          rules={[
-            {
-              validator: async (_, schedule) => {
-                if (!schedule || schedule.length < 1) {
-                  return Promise.reject(new Error("Chưa có lịch trình"));
-                }
+        <div className="form-list-title">Lịch trình: </div>
+        <div className="form-list">
+          <Form.List
+            name="schedule"
+            initialValue={[{ day: "", title: "", information: "" }]}
+            rules={[
+              {
+                validator: async (_, schedule) => {
+                  if (!schedule || schedule.length < 1) {
+                    return Promise.reject(new Error("Chưa có lịch trình"));
+                  }
+                },
               },
-            },
-          ]}
-        >
-          {(fields, { add, remove }) => (
-            <>
-              {fields.map(({ key, fieldKey, name, fieldNames, index }) => (
-                <div key={key}>
-                  <Form.Item
-                    label="Day"
-                    name={[name, "day"]}
-                    rules={[{ required: true, message: "Vui lòng nhập ngày" }]}
-                  >
-                    <Input placeholder="Nhập ngày" />
-                  </Form.Item>
-
-                  <Form.Item
-                    label="Title"
-                    name={[name, "title"]}
-                    rules={[{ required: true, message: "Vui lòng nhập title" }]}
-                  >
-                    <Input placeholder="Nhập title" />
-                  </Form.Item>
-
-                  <Form.Item
-                    label="Information"
-                    name={[name, "information"]}
-                    rules={[
-                      { required: true, message: "Vui lòng nhập thông tin" },
-                    ]}
-                  >
-                    <Input placeholder="Nhập thông tin" />
-                  </Form.Item>
-
-                  <Space>
-                    <Button
-                      type="dashed"
-                      onClick={() => add()}
-                      icon={<UploadOutlined />}
+            ]}
+          >
+            {(fields, { add, remove }) => (
+              <>
+                {fields.map(({ key, fieldKey, name, fieldNames, index }) => (
+                  <div key={key}>
+                    <Form.Item
+                      label="Ngày"
+                      name={[name, "day"]}
+                      rules={[
+                        { required: true, message: "Vui lòng nhập ngày" },
+                      ]}
                     >
-                      Thêm lịch trình
-                    </Button>
-                    {fields.length > 1 && (
-                      <Button type="link" onClick={() => remove(name)} danger>
-                        Xóa
+                      <InputNumber placeholder="Nhập" min={1} />
+                    </Form.Item>
+
+                    <Form.Item
+                      label="Tiêu đề"
+                      name={[name, "title"]}
+                      rules={[
+                        { required: true, message: "Vui lòng nhập title" },
+                      ]}
+                    >
+                      <Input placeholder="Nhập title" />
+                    </Form.Item>
+
+                    <Form.Item
+                      label="Thông tin"
+                      name={[name, "information"]}
+                      rules={[
+                        { required: true, message: "Vui lòng nhập thông tin" },
+                      ]}
+                    >
+                      <Input placeholder="Nhập thông tin" />
+                    </Form.Item>
+
+                    <Space>
+                      <Button
+                        type="dashed"
+                        onClick={() => add()}
+                        icon={<UploadOutlined />}
+                      >
+                        Thêm lịch trình
                       </Button>
-                    )}
-                  </Space>
-                </div>
-              ))}
-            </>
-          )}
-        </Form.List>
+                      {fields.length > 1 && (
+                        <Button type="link" onClick={() => remove(name)} danger>
+                          Xóa
+                        </Button>
+                      )}
+                    </Space>
+                  </div>
+                ))}
+              </>
+            )}
+          </Form.List>
+        </div>
 
         {/* Tour Detail */}
-        <Form.List
-          name="tour_detail"
-          initialValue={[
-            {
-              adultPrice: "",
-              childrenPrice: "",
-              childPrice: "",
-              babyPrice: "",
-              singleRoomSupplementPrice: "",
-              stock: "",
-              discount: "",
-              dayStart: "",
-              dayReturn: "",
-            },
-          ]}
-          rules={[
-            {
-              validator: async (_, tourDetail) => {
-                if (!tourDetail || tourDetail.length < 1) {
-                  return Promise.reject(new Error("Chưa có thông tin tour"));
-                }
+        <div className="form-list-title">Chi tiết tour: </div>
+        <div className="form-list">
+          <Form.List
+            name="tour_detail"
+            label="Thông tin chi tiết từng tour"
+            initialValue={[
+              {
+                adultPrice: "",
+                childrenPrice: "",
+                childPrice: "",
+                babyPrice: "",
+                singleRoomSupplementPrice: "",
+                stock: "",
+                discount: "",
+                dayStart: "",
+                dayReturn: "",
               },
-            },
-          ]}
-        >
-          {(fields, { add, remove }) => (
-            <>
-              {fields.map(({ key, fieldKey, name, fieldNames, index }) => (
-                <div key={key}>
-                  <Form.Item
-                    label="Giá người lớn"
-                    name={[name, "adultPrice"]}
-                    rules={[
-                      {
-                        required: true,
-                        message: "Vui lòng nhập giá người lớn",
-                      },
-                    ]}
-                  >
-                    <Input placeholder="Nhập giá người lớn" />
-                  </Form.Item>
-                  <Form.Item
-                    label="Giá trẻ em"
-                    name={[name, "childrenPrice"]}
-                    rules={[
-                      {
-                        required: false,
-                        message: "Vui lòng nhập giá trẻ em",
-                      },
-                    ]}
-                  >
-                    <Input placeholder="Nhập giá trẻ em" />
-                  </Form.Item>
-                  <Form.Item
-                    label="Giá trẻ nhỏ"
-                    name={[name, "childPrice"]}
-                    rules={[
-                      {
-                        required: false,
-                        message: "Vui lòng nhập giá trẻ nhỏ",
-                      },
-                    ]}
-                  >
-                    <Input placeholder="Nhập giá trẻ nhỏ" />
-                  </Form.Item>
-                  <Form.Item
-                    label="Giá trẻ sơ sinh"
-                    name={[name, "babyPrice"]}
-                    rules={[
-                      {
-                        required: false,
-                        message: "Vui lòng nhập giá trẻ sơ sinh",
-                      },
-                    ]}
-                  >
-                    <Input placeholder="Nhập giá trẻ sơ sinh" />
-                  </Form.Item>
-                  <Form.Item
-                    label="Phụ thu phòng đơn"
-                    name={[name, "singleRoomSupplementPrice"]}
-                    rules={[
-                      {
-                        required: false,
-                        message: "Vui lòng nhập giá phụ thu phòng đơn",
-                      },
-                    ]}
-                  >
-                    <Input placeholder="Nhập giá phụ thu phòng đơn" />
-                  </Form.Item>
-                  <Form.Item
-                    label="Giảm giá"
-                    name={[name, "discount"]}
-                    rules={[
-                      {
-                        required: false,
-                        message: "Vui lòng nhập phần trăm giảm giá",
-                      },
-                    ]}
-                  >
-                    <Input placeholder="Nhập phần trăm giảm giá" />
-                  </Form.Item>
-
-                  <Form.Item
-                    label="Stock"
-                    name={[name, "stock"]}
-                    rules={[
-                      { required: true, message: "Vui lòng nhập số lượng" },
-                    ]}
-                  >
-                    <Input placeholder="Nhập số lượng" />
-                  </Form.Item>
-
-                  {/* Ngày đi */}
-                  <Form.Item
-                    label="Ngày đi"
-                    name={[name, "dayStart"]}
-                    rules={[
-                      { required: true, message: "Vui lòng chọn ngày đi" },
-                    ]}
-                  >
-                    <DatePicker
-                      showTime
-                      format="YYYY-MM-DD HH:mm"
-                      placeholder="Chọn ngày đi"
-                    />
-                  </Form.Item>
-
-                  {/* Ngày về */}
-                  <Form.Item
-                    label="Ngày về"
-                    name={[name, "dayReturn"]}
-                    rules={[
-                      { required: true, message: "Vui lòng chọn ngày về" },
-                    ]}
-                  >
-                    <DatePicker
-                      showTime
-                      format="YYYY-MM-DD HH:mm"
-                      placeholder="Chọn ngày về"
-                    />
-                  </Form.Item>
-
-                  <Space>
-                    <Button
-                      type="dashed"
-                      onClick={() => add()}
-                      icon={<UploadOutlined />}
+            ]}
+            rules={[
+              {
+                validator: async (_, tourDetail) => {
+                  if (!tourDetail || tourDetail.length < 1) {
+                    return Promise.reject(new Error("Chưa có thông tin tour"));
+                  }
+                },
+              },
+            ]}
+          >
+            {(fields, { add, remove }) => (
+              <>
+                {fields.map(({ key, fieldKey, name, fieldNames, index }) => (
+                  <div key={key}>
+                    <Form.Item
+                      label="Giá người lớn"
+                      name={[name, "adultPrice"]}
+                      rules={[
+                        {
+                          required: true,
+                          message: "Vui lòng nhập giá người lớn",
+                        },
+                      ]}
                     >
-                      Thêm thông tin tour
-                    </Button>
-                    {fields.length > 1 && (
-                      <Button type="link" onClick={() => remove(name)} danger>
-                        Xóa
+                      <InputNumber
+                        min={0}
+                        max={100000000}
+                        step={1000}
+                        formatter={currencyFormatter}
+                        parser={currencyParser}
+                        style={{ marginRight: 10, width: 300 }}
+                      />
+                    </Form.Item>
+                    <Form.Item
+                      label="Giá trẻ em"
+                      name={[name, "childrenPrice"]}
+                      rules={[
+                        {
+                          required: false,
+                          message: "Vui lòng nhập giá trẻ em",
+                        },
+                      ]}
+                    >
+                      <InputNumber
+                        min={0}
+                        max={100000000}
+                        step={1000}
+                        formatter={currencyFormatter}
+                        parser={currencyParser}
+                        style={{ marginRight: 10, width: 300 }}
+                      />
+                    </Form.Item>
+                    <Form.Item
+                      label="Giá trẻ nhỏ"
+                      name={[name, "childPrice"]}
+                      rules={[
+                        {
+                          required: false,
+                          message: "Vui lòng nhập giá trẻ nhỏ",
+                        },
+                      ]}
+                    >
+                      <InputNumber
+                        min={0}
+                        max={100000000}
+                        step={1000}
+                        formatter={currencyFormatter}
+                        parser={currencyParser}
+                        style={{ marginRight: 10, width: 300 }}
+                      />
+                    </Form.Item>
+                    <Form.Item
+                      label="Giá trẻ sơ sinh"
+                      name={[name, "babyPrice"]}
+                      rules={[
+                        {
+                          required: false,
+                          message: "Vui lòng nhập giá trẻ sơ sinh",
+                        },
+                      ]}
+                    >
+                      <InputNumber
+                        min={0}
+                        max={100000000}
+                        step={1000}
+                        formatter={currencyFormatter}
+                        parser={currencyParser}
+                        style={{ marginRight: 10, width: 300 }}
+                      />
+                    </Form.Item>
+                    <Form.Item
+                      label="Phụ thu phòng đơn"
+                      name={[name, "singleRoomSupplementPrice"]}
+                      rules={[
+                        {
+                          required: false,
+                          message: "Vui lòng nhập giá phụ thu phòng đơn",
+                        },
+                      ]}
+                    >
+                      <InputNumber
+                        min={0}
+                        max={100000000}
+                        step={1000}
+                        formatter={currencyFormatter}
+                        parser={currencyParser}
+                        style={{ marginRight: 10, width: 300 }}
+                      />
+                    </Form.Item>
+                    <Form.Item
+                      label="Giảm giá"
+                      name={[name, "discount"]}
+                      rules={[
+                        {
+                          required: false,
+                          message: "Vui lòng nhập phần trăm giảm giá",
+                        },
+                      ]}
+                    >
+                      <Input placeholder="Nhập phần trăm giảm giá" />
+                    </Form.Item>
+
+                    <Form.Item
+                      label="Stock"
+                      name={[name, "stock"]}
+                      rules={[
+                        { required: true, message: "Vui lòng nhập số lượng" },
+                      ]}
+                    >
+                      <Input placeholder="Nhập số lượng" />
+                    </Form.Item>
+
+                    {/* Ngày đi */}
+                    <Form.Item
+                      label="Ngày đi"
+                      name={[name, "dayStart"]}
+                      rules={[
+                        { required: true, message: "Vui lòng chọn ngày đi" },
+                      ]}
+                    >
+                      <DatePicker
+                        showTime
+                        format="YYYY-MM-DD HH:mm"
+                        placeholder="Chọn ngày đi"
+                      />
+                    </Form.Item>
+
+                    {/* Ngày về */}
+                    <Form.Item
+                      label="Ngày về"
+                      name={[name, "dayReturn"]}
+                      rules={[
+                        { required: true, message: "Vui lòng chọn ngày về" },
+                      ]}
+                    >
+                      <DatePicker
+                        showTime
+                        format="YYYY-MM-DD HH:mm"
+                        placeholder="Chọn ngày về"
+                      />
+                    </Form.Item>
+
+                    <Space>
+                      <Button
+                        type="dashed"
+                        onClick={() => add()}
+                        icon={<UploadOutlined />}
+                      >
+                        Thêm tour
                       </Button>
-                    )}
-                  </Space>
-                </div>
-              ))}
-            </>
-          )}
-        </Form.List>
+                      {fields.length > 1 && (
+                        <Button type="link" onClick={() => remove(name)} danger>
+                          Xóa
+                        </Button>
+                      )}
+                    </Space>
+                  </div>
+                ))}
+              </>
+            )}
+          </Form.List>
+        </div>
 
         {/* Images */}
         <Form.Item
-          label="Image Upload"
+          label=""
           name={[name, "image"]}
           rules={[{ required: true, message: "Vui lòng tải lên ảnh" }]}
         >

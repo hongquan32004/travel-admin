@@ -360,6 +360,37 @@ function Tour() {
             </Option>
           ))}
         </Select>
+        <Select
+          style={{ width: 200, marginRight: 10 }}
+          placeholder="Trạng thái"
+          onChange={(value) => setFilters({ ...filters, status: value })}
+        >
+          <Option value="">Tất cả</Option>
+          <Option value="1">Hoạt động</Option>
+          <Option value="0">Không hoạt động</Option>
+        </Select>
+
+        {/* Add Select for Featured */}
+        <Select
+          style={{ width: 200, marginRight: 10 }}
+          placeholder="Nổi bật"
+          onChange={(value) => setFilters({ ...filters, isFeatured: value })}
+        >
+          <Option value="">Tất cả</Option>
+          <Option value="1">Nổi bật</Option>
+          <Option value="0">Không nổi bật</Option>
+        </Select>
+
+        {/* Add Select for Price */}
+        <Select
+          style={{ width: 200, marginRight: 10 }}
+          placeholder="Giá"
+          onChange={(value) => setFilters({ ...filters, sortOrder: value })}
+        >
+          <Option value="">Tất cả</Option>
+          <Option value="asc">Tăng dần</Option>
+          <Option value="desc">Giảm dần</Option>
+        </Select>
       </div>
 
       <Table
